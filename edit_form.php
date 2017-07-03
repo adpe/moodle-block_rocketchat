@@ -29,15 +29,6 @@ class block_rocketchat_edit_form extends block_edit_form {
  		// Section header title according to language file.
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block_rocketchat'));
 
-        // Add a title for the block
-        $mform->addElement('text', 'config_title', get_string('blocktitle', 'block_rocketchat'));
-        $mform->setDefault('config_title', 'default value');
-        $mform->setType('config_title', PARAM_TEXT);
-
-        // Add a value for the message
-        $mform->addElement('text', 'config_text', get_string('blockstring', 'block_rocketchat'));
-        $mform->setDefault('config_text', 'default value');
-        $mform->setType('config_text', PARAM_RAW);
-
     }
+
 }

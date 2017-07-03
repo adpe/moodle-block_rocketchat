@@ -24,49 +24,19 @@
 
 	class block_rocketchat extends block_base {
 
-		//Sets the title for the new added block
 		public function init() {
 			$this->title = get_string('defaulttitle', 'block_rocketchat');
 		}
 
-		//This will be added to the content when it's the first time created
 		public function get_content() {
 			if ($this->content !== null) {
 				return $this->content;
 			}
 
 			$this->content = new stdClass;
-
-			if (! empty($this->config->text)) {
-				$this->content->text = $this->config->text;
-				$this->content->text .= "bliablabla";
-			} else {
-				$this->content->text = "no text added";
-			}
+			$this->content->text = "to be added";
 
 			return $this->content;
 		}
 
-		//This part is to change the block values with the given one's in the configuration block.
-		public function specialization() {
-			if (isset($this->config)) {
-				if (empty($this->config->title)) {
-					$this->title = get_string('defaulttitle', 'block_rocketchat');
-				} else {
-					$this->title = $this->config->title;
-				}
-
-				if (! empty($this->config->text)) {
-					$this->content->text = $this->config->text;
-					$this->content->text .= "bliablabla";
-				} else {
-					$this->content->text = "no text added";
-				}
-			}
-		}
-
-		//This allows to add the plugin multiple times, normally you can add it only once
-		public function instance_allow_multiple() {
-			return true;
-		}
 	}

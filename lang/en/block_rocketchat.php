@@ -24,7 +24,5 @@
 
 $string['pluginname'] = 'RocketChat';
 $string['test:addinstance'] = 'Add a new RocketChat block';
-$string['defaulttitle'] = "This is the default RocketChat block title";
-$string['blocktitle'] = "Your block title is";
-$string['blockstring'] = "Your content is";
+$string['defaulttitle'] = "RocketChat";
 $string['blocksettings'] = "Change block config";
