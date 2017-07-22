@@ -53,9 +53,8 @@ class block_rocketchat extends block_base {
 			
 			if ($login->getStatus() == 1) {
 				$this->content->text = '<div>Status: '.$login->getStatus().'</div>';
-				//$this->content->text .= '<div>Private Channels: '.$channel->getPrivateChannels().'</div>';
-				//$this->content->text .= '<div>Public Channels: '.$channel->getPublicChannels().'</div>';
-				
+				$this->content->text .= '<div>Private Channels: '.$channel->getPrivateChannels().'</div>';
+				$this->content->text .= '<div>Public Channels: '.$channel->getPublicChannels().'</div>';
 				$this->content->text .= '<div><a href="./../blocks/rocketchat/classes/logout.php?id='.$COURSE->id.'">Logout</a></div>';
 			} else {
 				$this->content->text = '<div>Something went wrong with login procedure.';
