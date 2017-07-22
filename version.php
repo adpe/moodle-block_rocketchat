@@ -23,5 +23,5 @@
  */
 
 	$plugin->component = 'block_rocketchat';  // Recommended since 2.0.2 (MDL-26035). Required since 3.0 (MDL-48494)
-	$plugin->version = 2016122300;  // YYYYMMDDHH (year, month, day, 24-hr time)
+	$plugin->version = 2017060710;  // YYYYMMDDHH (year, month, day, 24-hr time)
 	$plugin->requires = 2016120500; // YYYYMMDDHH (This is the release version for Moodle 3.2)

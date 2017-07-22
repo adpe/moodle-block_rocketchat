@@ -26,3 +26,16 @@ $string['pluginname'] = 'RocketChat';
 $string['test:addinstance'] = 'Add a new RocketChat block';
 $string['defaulttitle'] = "RocketChat";
 $string['blocksettings'] = "Change block config";
+
+// Login form
+$string['intro'] = "Please login with your <b>SWITCHaai</b> credentials.";
+$string['username'] = "Username";
+$string['password'] = "Password";
+$string['submit'] = "Submit";
+
+// Validation form messages
+$string['credErr'] = "Please enter the credentials.";
+$string['nameErr'] = "Please enter the username.";
+$string['passErr'] = "Please enter the password.";
+$string['success'] = "Successful logged in to RocketChat.";
+$string['error'] = "Please try again and enter the correct credentials.";

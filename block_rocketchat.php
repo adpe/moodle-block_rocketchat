@@ -21,22 +21,49 @@
  * @copyright Adrian Perez <adrian.perez@ffhs.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+ 
+require_once __DIR__.'./vendor/autoload.php';
 
-	class block_rocketchat extends block_base {
+define('REST_API_ROOT', '/api/v1/');
+define('ROCKET_CHAT_INSTANCE', 'http://86.119.34.80:3000');
 
-		public function init() {
-			$this->title = get_string('defaulttitle', 'block_rocketchat');
-		}
+class block_rocketchat extends block_base {
 
-		public function get_content() {
-			if ($this->content !== null) {
-				return $this->content;
-			}
+	public function init() {
+		$this->title = get_string('defaulttitle', 'block_rocketchat');
+	}
 
-			$this->content = new stdClass;
-			$this->content->text = "to be added";
-
+	public function get_content() {
+		global $COURSE;
+		
+		if ($this->content !== null) {
 			return $this->content;
 		}
-
+		$this->content = new stdClass;
+		
+		// initialize objects and variables
+		$login = new \block_rocketchat\login();
+		$channel = new \block_rocketchat\channel();
+		
+		// First look if session exists when not create the login form and login manual
+		if (isset($_SESSION['rocketchat']['status']) && $_SESSION['rocketchat']['status'] == true) {
+			
+			// Login with session credentials to display content
+			$login->loginWithSession();
+			
+			if ($login->getStatus() == 1) {
+				$this->content->text = '<div>Status: '.$login->getStatus().'</div>';
+				//$this->content->text .= '<div>Private Channels: '.$channel->getPrivateChannels().'</div>';
+				//$this->content->text .= '<div>Public Channels: '.$channel->getPublicChannels().'</div>';
+				
+				$this->content->text .= '<div><a href="./../blocks/rocketchat/classes/logout.php?id='.$COURSE->id.'">Logout</a></div>';
+			} else {
+				$this->content->text = '<div>Something went wrong with login procedure.';
+			}
+		} else {
+			// Login without session
+			$this->content->text = $login->form();
+		}
+		return $this->content;
 	}
+}
