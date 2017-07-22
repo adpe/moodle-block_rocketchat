@@ -6,6 +6,7 @@ class login {
 
 	var $loginStatus;
 	var $loginSession;
+	var $userPresence;
 	var $credErr;
 	var $nameErr;
 	var $passErr;
@@ -102,25 +103,34 @@ class login {
 		$tmpPass = isset($_POST["password"]) ? $_POST["password"] : '';
 
 		$form = '
-	    		'.$intro.'<br/><br/>
+	    		'.$intro.'<br/>
 
 	 			<form id="rocketchat_form_login" method="post" action="">
 	    			<div class="field-group">
 	    				<div><label for="username">'.$username.'</label></div>
-						<div><input type="text" name="username" value="'.$tmpName.'"></div>
+						<div><input class="textfield" type="text" name="username" value="'.$tmpName.'"></div>
 					</div>
 					<div class="field-group">
 						<div><label for="password">'.$password.'</label></div>
-	    				<div><input type="password" name="password" value="'.$tmpPass.'"></div>
+	    				<div><input class="textfield" type="password" name="password" value="'.$tmpPass.'"></div>
 					</div>
 	    			<div class="field-group">
-	    				<div><input type="submit" name="submit" value="'.$submit.'"></div>
+	    				<div><input class="loginbtn" type="submit" name="submit" value="'.$submit.'"></div>
 					</div>
 	    		</form>
 				';
 			return $form;
 	}
-
+	
+	public function getPresence() {
+		$info = new \RocketChat\Client;
+		$this->userPresence = $info->me()->status;
+	}
+	
+	public function getUserPresence() {
+		return $this->userPresence;
+	}
+	
 	public function getStatus() {
 		return $this->loginStatus;
 	}

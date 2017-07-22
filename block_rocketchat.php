@@ -30,9 +30,17 @@ define('ROCKET_CHAT_INSTANCE', 'http://86.119.34.80:3000');
 class block_rocketchat extends block_base {
 
 	public function init() {
+		global $PAGE;
+		
 		$this->title = get_string('defaulttitle', 'block_rocketchat');
-	}
+		$PAGE->requires->css('/blocks/rocketchat/css/style.css');
+		//echo '<link rel="stylesheet" type="text/css" href="'.__DIR__.'/style/dropdown.css" media="screen" />';
+		//$PAGE->requires->js('/blocks/rocketchat/js/jquery-3.2.1.min.js');
 
+		//echo '<script>window.setInterval(function(){$login->getPresence();}, 5000);</script>';
+		//echo '<script>window.setInterval(function(){$this->refresh_content();}, 5000);</script>';
+	}
+	
 	public function get_content() {
 		global $COURSE;
 		
@@ -44,18 +52,22 @@ class block_rocketchat extends block_base {
 		// initialize objects and variables
 		$login = new \block_rocketchat\login();
 		$channel = new \block_rocketchat\channel();
-		
+		$action = new \block_rocketchat\actions();
+
 		// First look if session exists when not create the login form and login manual
 		if (isset($_SESSION['rocketchat']['status']) && $_SESSION['rocketchat']['status'] == true) {
-			
+
 			// Login with session credentials to display content
 			$login->loginWithSession();
 			
 			if ($login->getStatus() == 1) {
-				$this->content->text = '<div>Status: '.$login->getStatus().'</div>';
-				$this->content->text .= '<div>Private Channels: '.$channel->getPrivateChannels().'</div>';
-				$this->content->text .= '<div>Public Channels: '.$channel->getPublicChannels().'</div>';
-				$this->content->text .= '<div><a href="./../blocks/rocketchat/classes/logout.php?id='.$COURSE->id.'">Logout</a></div>';
+				$login->getPresence();
+				$this->content->text = '<div class="status">Status: '.$login->getUserPresence().'</div>';
+				$this->content->text .= '<div><span><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></span></br>
+						Private Channels'.$channel->getPrivateChannels().'</div>';
+				$this->content->text .= '<div><span><i class="fa fa-users fa-2x" aria-hidden="true"></i></span></br>
+						Public Channels'.$channel->getPublicChannels().'</div>';
+				$this->content->text .= $action->initDropdownMenu();
 			} else {
 				$this->content->text = '<div>Something went wrong with login procedure.';
 			}
@@ -63,6 +75,7 @@ class block_rocketchat extends block_base {
 			// Login without session
 			$this->content->text = $login->form();
 		}
+		
 		return $this->content;
 	}
 }
