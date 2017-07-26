@@ -1,0 +1,60 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+<div class="wrappingdiv">
+    <div class="self">
+        <div class="status">
+	        <p>Status: {{#user}}{{status}}{{/user}}</p>
+        </div>
+    </div>
+    <br />
+    <i class="fa fa-user-secret fa-2x" aria-hidden="true"></i>
+    <br />
+    <span class="lbl_chat">{{# str }} lbl_group, block_rocketchat {{/ str }}</span>
+    <div class="groups">
+        <div id="privateresults">
+        	<ul>
+        		{{#private}}
+        		<li><a href="{{id}}">{{name}}</a></li>
+        		{{/private}}
+        	</ul>
+        </div>
+    </div>
+    <br />
+    <i class="fa fa-users fa-2x" aria-hidden="true"></i>
+    <br />
+    <span class="lbl_chat">{{# str }} lbl_chat, block_rocketchat {{/ str }}</span>
+    <div class="channels">
+        <div id="publicresults">
+        	<ul>
+        		{{#public}}
+        		<li><a href="{{id}}">{{name}}</a></li>
+        		{{/public}}
+        	</ul>
+        </div>
+    </div>
+    <br />
+	<div class="dropdown">
+  		<button class="dropbtn">Actions</button>
+  		<div class="dropdown-content">
+    		<a href="#">Create channel</a>
+    		<a href="#">Show users</a>
+    		<a href="#">Write message</a>
+			<a href="#">Change status</a>
+			<a href="./../blocks/rocketchat/classes/logout.php?id={{courseid}}">Logout</a>
+ 		</div>
+	</div>
+</div>

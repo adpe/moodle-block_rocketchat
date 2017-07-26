@@ -21,7 +21,9 @@
  * @copyright Adrian Perez <adrian.perez@ffhs.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
+defined('MOODLE_INTERNAL') || die();
+
 require_once __DIR__.'./vendor/autoload.php';
 
 define('REST_API_ROOT', '/api/v1/');
@@ -30,52 +32,53 @@ define('ROCKET_CHAT_INSTANCE', 'http://86.119.34.80:3000');
 class block_rocketchat extends block_base {
 
 	public function init() {
-		global $PAGE;
-		
+		global $CFG, $PAGE;
+
 		$this->title = get_string('defaulttitle', 'block_rocketchat');
 		$PAGE->requires->css('/blocks/rocketchat/css/style.css');
-		//echo '<link rel="stylesheet" type="text/css" href="'.__DIR__.'/style/dropdown.css" media="screen" />';
-		//$PAGE->requires->js('/blocks/rocketchat/js/jquery-3.2.1.min.js');
 
-		//echo '<script>window.setInterval(function(){$login->getPresence();}, 5000);</script>';
-		//echo '<script>window.setInterval(function(){$this->refresh_content();}, 5000);</script>';
+		/**
+		 * Development code
+		 *
+		 * echo '<script>window.setInterval(function(){$this->refresh_content();}, 5000);</script>';
+		 * $PAGE->requires->js(new moodle_url($CFG->wwwroot . '/blocks/rocketchat/js/mustache.js'));
+		 * $PAGE->requires->js(new moodle_url($CFG->wwwroot . '/blocks/rocketchat/js/jquery-3.2.1.min.js'));
+		 * $PAGE->requires->yui_module('moodle-block_rocketchat-module', 'M.block_rocketchat.module.init', null);
+		 *
+		 */
 	}
-	
+
 	public function get_content() {
 		global $COURSE;
-		
+
 		if ($this->content !== null) {
 			return $this->content;
 		}
 		$this->content = new stdClass;
-		
-		// initialize objects and variables
+
+		$renderer = $this->page->get_renderer('block_rocketchat');
+		$block = new \block_rocketchat\output\block();
+
+		//Initialize objects and variables
 		$login = new \block_rocketchat\login();
-		$channel = new \block_rocketchat\channel();
-		$action = new \block_rocketchat\actions();
 
-		// First look if session exists when not create the login form and login manual
+		//First look if session exists when not create the login form and login manual
 		if (isset($_SESSION['rocketchat']['status']) && $_SESSION['rocketchat']['status'] == true) {
-
-			// Login with session credentials to display content
+			//Login with session credentials to display content
 			$login->loginWithSession();
-			
+
 			if ($login->getStatus() == 1) {
-				$login->getPresence();
-				$this->content->text = '<div class="status">Status: '.$login->getUserPresence().'</div>';
-				$this->content->text .= '<div><span><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></span></br>
-						Private Channels'.$channel->getPrivateChannels().'</div>';
-				$this->content->text .= '<div><span><i class="fa fa-users fa-2x" aria-hidden="true"></i></span></br>
-						Public Channels'.$channel->getPublicChannels().'</div>';
-				$this->content->text .= $action->initDropdownMenu();
+                $this->content->text = $renderer->render_block($block, $login);
 			} else {
 				$this->content->text = '<div>Something went wrong with login procedure.';
 			}
 		} else {
-			// Login without session
-			$this->content->text = $login->form();
+			//Login without session
+            $this->content->text = $renderer->render_login($block);
+
 		}
 		
+		$this->content->footer = '';
 		return $this->content;
 	}
 }

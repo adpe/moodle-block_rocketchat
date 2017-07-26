@@ -13,22 +13,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Edit form for the RocketChat plugin.
- *
  * @package   block_rocketchat
- * @copyright Adrian Perez <adrian.perez@ffhs.ch>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+*/
 
-class block_rocketchat_edit_form extends block_edit_form {
+namespace block_rocketchat\output;
 
-	protected function specific_definition($mform) {
+defined('MOODLE_INTERNAL') || die();
 
- 		// Section header title according to language file.
-        $mform->addElement('header', 'configheader', get_string('blocksettings', 'block_rocketchat'));
-
-    }
-
+class renderer extends \plugin_renderer_base {
+	/**
+	 * Render a rocketchat block
+	 *
+	 * @param \templatable $block
+	 * @return string|boolean
+	 */
+	public function render_block(\templatable $block) {
+		$data = $block->export_for_block($this);
+		return $this->render_from_template('block_rocketchat/block', $data);
+	}
+	/**
+	 * Render block login page.
+	 *
+	 * @param \templatable $block
+	 * @return string|boolean
+	 */
+	public function render_login(\templatable $block) {
+		$data = $block->export_for_login($this);
+		return $this->render_from_template('block_rocketchat/login', $data);
+	}
 }

@@ -27,6 +27,10 @@ $string['test:addinstance'] = 'Add a new RocketChat block';
 $string['defaulttitle'] = "RocketChat";
 $string['blocksettings'] = "Change block config";
 
+// Main form
+$string['lbl_group'] = "Private channels";
+$string['lbl_chat'] = "Public channels";
+
 // Login form
 $string['intro'] = "Please login with your <b>SWITCHaai</b> credentials.";
 $string['username'] = "Username";

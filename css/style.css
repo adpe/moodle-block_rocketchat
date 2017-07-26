@@ -44,7 +44,14 @@
 /* 		CHANNEL CUSTOMIZATIONS 		*/
 /************************************/
 
-/* tba */
+.fachat {
+	float: left
+}
+
+.lbl_chat {
+	font-size: 14px;
+	font-weight: bold
+}
 
 /************************************/
 /*		DROPDOWN CUSTOMIZATIONS 	*/

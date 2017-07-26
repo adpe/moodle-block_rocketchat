@@ -1,6 +1,7 @@
-/src/
-/vendor/
-/src/
+vendor/
+cfg/config.php
+js/*
+yui/
 composer.lock
 .buildpath
 .project

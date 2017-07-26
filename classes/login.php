@@ -4,9 +4,7 @@ namespace block_rocketchat;
 
 class login {
 
-	var $loginStatus;
 	var $loginSession;
-	var $userPresence;
 	var $credErr;
 	var $nameErr;
 	var $passErr;
@@ -16,7 +14,7 @@ class login {
 	protected $username;
 	protected $password;
 
-	function __construct() {
+	public function __construct() {
 
 		if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$this->loginWithForm();
@@ -73,66 +71,17 @@ class login {
 				$this->password
 			);
 
-		$this->loginStatus = $auth->login();
-
-		if ($this->loginStatus == 1) {
+		if ($auth->login() == 1) {
 			$_SESSION['rocketchat']['username'] = $this->username;
 			$_SESSION['rocketchat']['password'] = $this->password;
 			$_SESSION['rocketchat']['status'] = true;
 
-			$this->userId = $auth->id;
-
 			if (!$this->loginSession) {
 				\core\notification::success($this->success);
 			}
-
+			
 		} else {
 			\core\notification::error($this->error);
 		}
-
 	}
-
-	public function form() {
-
-		$intro = get_string('intro', 'block_rocketchat');
-		$username = get_string('username', 'block_rocketchat');
-		$password = get_string('password', 'block_rocketchat');
-		$submit = get_string('submit', 'block_rocketchat');
-
-		$tmpName = isset($_POST["username"]) ? $_POST["username"] : '';
-		$tmpPass = isset($_POST["password"]) ? $_POST["password"] : '';
-
-		$form = '
-	    		'.$intro.'<br/>
-
-	 			<form id="rocketchat_form_login" method="post" action="">
-	    			<div class="field-group">
-	    				<div><label for="username">'.$username.'</label></div>
-						<div><input class="textfield" type="text" name="username" value="'.$tmpName.'"></div>
-					</div>
-					<div class="field-group">
-						<div><label for="password">'.$password.'</label></div>
-	    				<div><input class="textfield" type="password" name="password" value="'.$tmpPass.'"></div>
-					</div>
-	    			<div class="field-group">
-	    				<div><input class="loginbtn" type="submit" name="submit" value="'.$submit.'"></div>
-					</div>
-	    		</form>
-				';
-			return $form;
-	}
-	
-	public function getPresence() {
-		$info = new \RocketChat\Client;
-		$this->userPresence = $info->me()->status;
-	}
-	
-	public function getUserPresence() {
-		return $this->userPresence;
-	}
-	
-	public function getStatus() {
-		return $this->loginStatus;
-	}
-	
 }
