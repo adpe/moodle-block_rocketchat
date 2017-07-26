@@ -57,8 +57,9 @@ class login {
 		$this->username = $_SESSION['rocketchat']['username'];
 		$this->password = $_SESSION['rocketchat']['password'];
 		$this->loginSession = true;
-		$this->verifyLogin();
-
+		$login = $this->verifyLogin();
+		
+		return $login;
 	}
 
 	private function verifyLogin() {
@@ -79,9 +80,10 @@ class login {
 			if (!$this->loginSession) {
 				\core\notification::success($this->success);
 			}
-			
+			return true;		
 		} else {
 			\core\notification::error($this->error);
+			return false;
 		}
 	}
 }

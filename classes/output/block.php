@@ -43,8 +43,10 @@ class block implements \renderable, \templatable {
 	}
 
 	public function export_for_block(\renderer_base $output) {
+		global $COURSE;
 		
 		$data = array(
+				'courseid' => $COURSE->id,
 				'user' => array(),
 				'private' => array(),
 				'public' =>	array()

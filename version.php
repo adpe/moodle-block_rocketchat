@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-	$plugin->component = 'block_rocketchat';  // Recommended since 2.0.2 (MDL-26035). Required since 3.0 (MDL-48494)
-	$plugin->version = 2017060710;  // YYYYMMDDHH (year, month, day, 24-hr time)
-	$plugin->requires = 2016120500; // YYYYMMDDHH (This is the release version for Moodle 3.2)
+$plugin->component = 'block_rocketchat';  // Recommended since 2.0.2 (MDL-26035). Required since 3.0 (MDL-48494)
+$plugin->version = 2017060710;  // YYYYMMDDHH (year, month, day, 24-hr time)
+$plugin->requires = 2016120500; // YYYYMMDDHH (This is the release version for Moodle 3.2)
+$plugin->release = '0.1.0';
+$plugin->maturity = MATURITY_ALPHA;

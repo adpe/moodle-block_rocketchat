@@ -65,12 +65,12 @@ class block_rocketchat extends block_base {
 		//First look if session exists when not create the login form and login manual
 		if (isset($_SESSION['rocketchat']['status']) && $_SESSION['rocketchat']['status'] == true) {
 			//Login with session credentials to display content
-			$login->loginWithSession();
+			$status = $login->loginWithSession();
 
-			if ($login->getStatus() == 1) {
+			if ($status == true) {
                 $this->content->text = $renderer->render_block($block, $login);
 			} else {
-				$this->content->text = '<div>Something went wrong with login procedure.';
+				$this->content->text = '<div>Something went wrong with the login procedure.';
 			}
 		} else {
 			//Login without session
