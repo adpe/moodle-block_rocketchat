@@ -1,6 +1,6 @@
 vendor/
 cfg/config.php
-js/*
+js/
 yui/
 composer.lock
 .buildpath
