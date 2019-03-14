@@ -13,58 +13,63 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * @package   block_rocketchat
-*/
+ * Rocket.Chat controller to get prepare data.
+ *
+ * @package     block_rocketchat
+ * @copyright   2019 Adrian Perez <p.adrian@gmx.ch> {@link https://adrianperez.me}
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace block_rocketchat\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once __DIR__.'./../../locallib.php';
+require_once(__DIR__ . './../../locallib.php');
 
 class block implements \renderable, \templatable {
 
-	/**
-	 * Contructor
-	 */
-	public function __construct() {
-	}
+    /**
+     * Contructor
+     */
+    public function __construct() {
+    }
 
-	/**
-	 * Prepare data for use in a template
-	 *
-	 * @param \renderer_base $output
-	 * @return array Template data
-	 */
+    /**
+     * Prepare data for use in a template
+     *
+     * @param \renderer_base $output
+     * @return array Template data
+     */
 
-	public function export_for_template(\renderer_base $output) {
-		return false;
-	}
+    public function export_for_template(\renderer_base $output) {
+        return [];
+    }
 
-	public function export_for_block(\renderer_base $output) {
-		global $COURSE;
-		
-		$data = array(
-				'courseid' => $COURSE->id,
-				'user' => array(),
-				'private' => array(),
-				'public' =>	array()
-		);
-		
-		$tmpdata = getPresence($data);
-		$finaldata = getChannels($tmpdata);
-		
-		return $finaldata;
-	}
+    public function export_for_block(\renderer_base $output) {
+        global $COURSE;
 
-	public function export_for_login(\renderer_base $output) {
+        $data = [
+            'courseid' => $COURSE->id,
+            'user' => [],
+            'private' => [],
+            'public' => []
+        ];
 
-		$data = [
-				'tmpName' => isset($_POST["username"]) ? $_POST["username"] : '',
-				'tmpPass' => isset($_POST["password"]) ? $_POST["password"] : '',
-		];
+        $tmpdata = get_presence($data);
+        $finaldata = get_channels($tmpdata);
 
-		return $data;
-	}
+        return $finaldata;
+    }
+
+    public function export_for_login(\renderer_base $output) {
+
+        $data = [
+            'tmpusername' => isset($_POST["username"]) ? $_POST["username"] : '',
+            'tmppassword' => isset($_POST["password"]) ? $_POST["password"] : '',
+        ];
+
+        return $data;
+    }
 }

@@ -1,89 +1,115 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Rocket.Chat login handler.
+ *
+ * @package     block_rocketchat
+ * @copyright   2019 Adrian Perez <p.adrian@gmx.ch> {@link https://adrianperez.me}
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace block_rocketchat;
 
+defined('MOODLE_INTERNAL') || die();
+
 class login {
 
-	var $loginSession;
-	var $credErr;
-	var $nameErr;
-	var $passErr;
-	var $success;
-	var $error;
+    public $loginsession;
+    public $credentialserror;
+    public $usernameerror;
+    public $passworderror;
+    public $success;
+    public $error;
 
-	protected $username;
-	protected $password;
+    protected $username;
+    protected $password;
 
-	public function __construct() {
+    public function __construct() {
 
-		if ($_SERVER["REQUEST_METHOD"] == "POST") {
-			$this->loginWithForm();
-		}
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $this->login_with_form();
+        }
 
-	}
+    }
 
-	private function loginWithForm() {
+    private function login_with_form() {
 
-		$this->credErr = get_string('credErr', 'block_rocketchat');
-		$this->nameErr = get_string('nameErr', 'block_rocketchat');
-		$this->passErr = get_string('passErr', 'block_rocketchat');
+        $this->credentialserror = get_string('credentialserror', 'block_rocketchat');
+        $this->usernameerror = get_string('usernameerror', 'block_rocketchat');
+        $this->passworderror = get_string('passworderror', 'block_rocketchat');
 
-		do {
-			if (empty($_POST["username"]) && empty($_POST["password"])) {
-				\core\notification::info($this->credErr);
-				break;
-			}
+        do {
+            if (empty($_POST["username"]) && empty($_POST["password"])) {
+                \core\notification::info($this->credentialserror);
+                break;
+            }
 
-			if (empty($_POST["username"])) {
-				\core\notification::warning($this->nameErr);
-				break;
-			}
+            if (empty($_POST["username"])) {
+                \core\notification::warning($this->usernameerror);
+                break;
+            }
 
-			if (empty($_POST["password"])) {
-				\core\notification::warning($this->passErr);
-				break;
-			}
+            if (empty($_POST["password"])) {
+                \core\notification::warning($this->passworderror);
+                break;
+            }
 
-			$this->username = $_POST['username'];
-			$this->password = $_POST['password'];
-			$this->verifyLogin();
+            $this->username = $_POST['username'];
+            $this->password = $_POST['password'];
+            $this->verify_login();
 
-		} while(0);
+        } while (0);
 
-	}
+    }
 
-	public function loginWithSession() {
+    public function login_with_session() {
 
-		$this->username = $_SESSION['rocketchat']['username'];
-		$this->password = $_SESSION['rocketchat']['password'];
-		$this->loginSession = true;
-		$login = $this->verifyLogin();
-		
-		return $login;
-	}
+        $this->username = $_SESSION['rocketchat']['username'];
+        $this->password = $_SESSION['rocketchat']['password'];
+        $this->loginsession = true;
+        $login = $this->verify_login();
 
-	private function verifyLogin() {
-		$this->success = get_string('success', 'block_rocketchat');
-		$this->error = get_string('error', 'block_rocketchat');
+        return $login;
+    }
 
-		$auth = new \RocketChat\User
-			(
-				$this->username,
-				$this->password
-			);
+    private function verify_login() {
+        $this->success = get_string('validationsuccess', 'block_rocketchat');
+        $this->error = get_string('validationerror', 'block_rocketchat');
 
-		if ($auth->login() == 1) {
-			$_SESSION['rocketchat']['username'] = $this->username;
-			$_SESSION['rocketchat']['password'] = $this->password;
-			$_SESSION['rocketchat']['status'] = true;
+        $auth = new \RocketChat\User
+        (
+                $this->username,
+                $this->password
+        );
 
-			if (!$this->loginSession) {
-				\core\notification::success($this->success);
-			}
-			return true;		
-		} else {
-			\core\notification::error($this->error);
-			return false;
-		}
-	}
+        if ($auth->login() == 1) {
+            $_SESSION['rocketchat']['username'] = $this->username;
+            $_SESSION['rocketchat']['password'] = $this->password;
+            $_SESSION['rocketchat']['status'] = true;
+
+            if (!$this->loginsession) {
+                \core\notification::success($this->success);
+            }
+
+            return true;
+        } else {
+            \core\notification::error($this->error);
+
+            return false;
+        }
+    }
 }

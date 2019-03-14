@@ -15,42 +15,39 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 <div class="wrappingdiv">
-    <div class="self">
-        <div class="status">
-	        <p>Status: {{#user}}{{status}}{{/user}}</p>
-        </div>
+    <div class="status">
+        Status: <span class="online-text" data-region="contact-icon-{{#user}}{{status}}{{/user}}">
+                <i class="icon fa fa-circle fa-fw " aria-hidden="true" title="{{#user}}{{status}}{{/user}}" aria-label="{{#user}}{{status}}{{/user}}"></i>
+                </span>
     </div>
-    <i class="fa fa-user-secret fa-2x" aria-hidden="true"></i>
-    <br />
-    <span class="lbl_chat">{{# str }} lbl_group, block_rocketchat {{/ str }}</span>
     <div class="groups">
+        <i class="fa fa-user-secret" aria-hidden="true"></i><span class="lbl_chat"> {{# str }} lbl_group, block_rocketchat {{/ str }}</span>
         <div id="privateresults">
         	<ul>
         		{{#private}}
-        		<li><a href="{{id}}">{{name}}</a></li>
+        		<li>
+                    <a href="{{href}}{{name}}{{layout}}" target="_blank">{{name}}</a>
+                </li>
         		{{/private}}
         	</ul>
         </div>
     </div>
-    <i class="fa fa-users fa-2x" aria-hidden="true"></i>
-    <br />
-    <span class="lbl_chat">{{# str }} lbl_chat, block_rocketchat {{/ str }}</span>
     <div class="channels">
+        <i class="fa fa-users" aria-hidden="true"></i><span class="lbl_chat"> {{# str }} lbl_chat, block_rocketchat {{/ str }}</span>
         <div id="publicresults">
         	<ul>
         		{{#public}}
-        		<li><a href="{{id}}">{{name}}</a></li>
+        		<li>
+                    <a href="{{href}}{{name}}{{layout}}" target="_blank">{{name}}</a>
+                </li>
         		{{/public}}
         	</ul>
         </div>
     </div>
-    <br />
 	<div class="dropdown">
   		<button class="dropbtn">Actions</button>
   		<div class="dropdown-content">
     		<a href="#">Create channel</a>
-    		<a href="#">Show users</a>
-    		<a href="#">Write message</a>
 			<a href="#">Change status</a>
 			<a href="./../blocks/rocketchat/classes/logout.php?id={{courseid}}">Logout</a>
  		</div>

@@ -1,29 +1,27 @@
-# Moodle Rocket.Chat block plugin
-One Paragraph of project description goes here
+# Moodle Rocket.Chat Block Plugin [![Build Status](https://travis-ci.org/adpe/moodle-block_rocketchat.svg?branch=master)](https://travis-ci.org/adpe/moodle-block_rocketchat)
 
-## Getting Started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+The Rocket.Chat block plugin acts as overview and quick access between Moodle and Rocket.Chat. This block lists all groups and channels of the Rocket.Chat user.
 
-### Prerequisites
-What things you need to install the software and how to install them
+## Main features
+1. Channel overview (public and private)
+2. Access to Rocket.Chat channels and groups.
 
-```
-Give examples
-```
+## Installation
+This plugin has a dependency as the [`local_rocketchat`](https://github.com/adpe/moodle-local_rocketchat) plugin must be installed first. After that please do these steps:
+1. Copy this Rocket.Chat plugin to the `blocks` directory of your Moodle instance: `git clone https://github.com/adpe/moodle-blocks_rocketchat.git blocks/rocketchat`
+2. Visit the notifications page to complete the install process
 
-### Installing
-A step by step series of examples that tell you have to get a development env running
+For more information, visit [documentation](http://docs.moodle.org/en/Installing_contributed_modules_or_plugins) for installing contributed modules and plugins.
 
-Say what the step will be
+*Note* - you need a running Rocket.Chat server that you can point the plugin to. If you aren't sure how to do this, checkout the [documentation](https://rocket.chat/docs/installation/) on Rocket.Chat. I also added a bit of [code](https://github.com/getsmarter/rocketchat-api-rest) to Rocket.Chat to make integration a little easier. This unfortunately will require a custom build of the Rocket.Chat source code. 
 
-```
-Give the example
-```
+## Usage
+The user can add this block in all Moodle areas where blocks can be added. So he has over all Moodle access to his channels.
 
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+## Todo
+- Create public channel direct from the block.
+- Create private group direct from the block.
+- Change the status of the user.
+- Open new chat inside popup and not as new tab.
+- Fix logout out of block.
+- Redesign block.

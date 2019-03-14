@@ -15,15 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *  RocketChat plugin version information.
+ *  Rocket.Chat block plugin version information.
  *
- * @package   block_rocketchat
- * @copyright Adrian Perez <adrian.perez@ffhs.ch>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     block_rocketchat
+ * @copyright   2019 Adrian Perez <p.adrian@gmx.ch> {@link https://adrianperez.me}
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->component = 'block_rocketchat';  // Recommended since 2.0.2 (MDL-26035). Required since 3.0 (MDL-48494)
-$plugin->version = 2017060710;  // YYYYMMDDHH (year, month, day, 24-hr time)
-$plugin->requires = 2016120500; // YYYYMMDDHH (This is the release version for Moodle 3.2)
-$plugin->release = '0.1.0';
-$plugin->maturity = MATURITY_ALPHA;
+defined('MOODLE_INTERNAL') || die();
+
+$plugin->component  = 'block_rocketchat';
+$plugin->version    = 2019031400;
+$plugin->requires   = 2016120500;
+$plugin->release    = '0.2.0';
+$plugin->maturity   = MATURITY_ALPHA;
+$plugin->dependencies = [
+    'local_rocketchat' => 2016082401
+];

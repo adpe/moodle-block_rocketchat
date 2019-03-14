@@ -15,31 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language string definitions for the RocketChat plugin.
+ * Language string definitions for the Rocket.Chat block plugin.
  *
  * @package   block_rocketchat
- * @copyright Adrian Perez <adrian.perez@ffhs.ch>
+ * @copyright 2019 Adrian Perez <p.adrian@gmx.ch> {@link https://adrianperez.me}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 $string['pluginname'] = 'RocketChat';
-$string['test:addinstance'] = 'Add a new RocketChat block';
-$string['defaulttitle'] = "RocketChat";
-$string['blocksettings'] = "Change block config";
+$string['defaulttitle'] = 'RocketChat';
+$string['blocksettings'] = 'Change block config';
 
-// Main form
-$string['lbl_group'] = "Private channels";
-$string['lbl_chat'] = "Public channels";
+// Main form.
+$string['lbl_group'] = 'Private channels';
+$string['lbl_chat'] = 'Public channels';
 
-// Login form
-$string['intro'] = "Please login with your <b>SWITCHaai</b> credentials.";
-$string['username'] = "Username";
-$string['password'] = "Password";
-$string['submit'] = "Submit";
+// Login form.
+$string['intro'] = 'Please login with your Rocket.Chat credentials.';
+$string['loginerror'] = 'Something went wrong with the login procedure.';
+$string['username'] = 'Username';
+$string['password'] = 'Password';
+$string['submit'] = 'Submit';
 
-// Validation form messages
-$string['credErr'] = "Please enter the credentials.";
-$string['nameErr'] = "Please enter the username.";
-$string['passErr'] = "Please enter the password.";
-$string['success'] = "Successful logged in to RocketChat.";
-$string['error'] = "Please try again and enter the correct credentials.";
+// Validation form messages.
+$string['credentialserror'] = 'Please enter the credentials.';
+$string['usernameerror'] = 'Please enter the username.';
+$string['passworderror'] = 'Please enter the password.';
+$string['validationsuccess'] = 'Successful logged in to RocketChat.';
+$string['validationerror'] = 'Please try again and enter the correct credentials.';
