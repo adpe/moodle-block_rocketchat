@@ -26,9 +26,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/vendor/autoload.php');
 
+$host = get_config('local_rocketchat', 'host');
+$port = !empty($port = get_config('local_rocketchat', 'port')) ? ':' . $port : '';
+$protocol = get_config('local_rocketchat', 'protocol') == 0 ? 'https' : 'http';
+$instanceurl = $protocol . '://' . $host . $port;
+
 define('REST_API_ROOT', '/api/v1/');
-define('ROCKET_CHAT_INSTANCE', get_config('local_rocketchat', 'host') . ':' . get_config('local_rocketchat', 'port'));
-define('ROCKET_CHAT_PROTOCOL', get_config('local_rocketchat', 'protocol') == 0 ? 'https' : 'http');
+define('ROCKET_CHAT_INSTANCE', $instanceurl);
 
 class block_rocketchat extends block_base {
 

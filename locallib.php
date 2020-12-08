@@ -46,7 +46,7 @@ function get_channels($tmpdata) {
         $tmp = array(
                 'id' => $private[$i]->id,
                 'name' => $private[$i]->name,
-                'href' => ROCKET_CHAT_PROTOCOL . '://' . ROCKET_CHAT_INSTANCE . '/group/',
+                'href' => ROCKET_CHAT_INSTANCE . '/group/',
                 'layout' => '?layout=embedded'
         );
 
@@ -57,7 +57,7 @@ function get_channels($tmpdata) {
         $tmp = array(
                 'id' => $public[$i]->id,
                 'name' => $public[$i]->name,
-                'href' => ROCKET_CHAT_PROTOCOL . '://' . ROCKET_CHAT_INSTANCE . '/channel/',
+                'href' => ROCKET_CHAT_INSTANCE . '/channel/',
                 'layout' => '?layout=embedded'
         );
 
