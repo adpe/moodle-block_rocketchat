@@ -24,6 +24,9 @@
 
 namespace block_rocketchat;
 
+use Httpful\Mime;
+use Httpful\Request;
+
 defined('MOODLE_INTERNAL') || die();
 
 class login {
@@ -74,6 +77,33 @@ class login {
 
         } while (0);
 
+    }
+
+    /**
+     *
+     *
+     * @param $token
+     * @return bool
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function login_with_token($token) {
+        $response = Request::post(ROCKET_CHAT_INSTANCE . REST_API_ROOT . 'login')
+                ->body(['resume' => $token], Mime::JSON)
+                ->send();
+
+        if ($response->code == 200 && isset($response->body->status) && $response->body->status == 'success') {
+            // Save auth token for future requests.
+            $tmp = Request::init()
+                    ->addHeader('X-Auth-Token', $response->body->data->authToken)
+                    ->addHeader('X-User-Id', $response->body->data->userId);
+            Request::ini($tmp);
+
+            return true;
+        } else {
+            echo ($response->body->message);
+
+            return false;
+        }
     }
 
     public function login_with_session() {

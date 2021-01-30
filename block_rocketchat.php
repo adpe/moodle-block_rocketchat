@@ -38,12 +38,12 @@ class block_rocketchat extends block_base {
     }
 
     public function get_content() {
-        global $COURSE;
-
         if ($this->content !== null) {
             return $this->content;
         }
+
         $this->content = new stdClass;
+        $this->content->footer = '';
 
         $renderer = $this->page->get_renderer('block_rocketchat');
         $block = new \block_rocketchat\output\block();
@@ -51,23 +51,33 @@ class block_rocketchat extends block_base {
         // Initialize objects and variables.
         $login = new \block_rocketchat\login();
 
-        // First look if session exists when not create the login form and login manual.
-        if (isset($_SESSION['rocketchat']['status']) && $_SESSION['rocketchat']['status'] == true) {
-            // Login with session credentials to display content.
-            $status = $login->login_with_session();
-
-            if ($status == true) {
+        // Login with existing session.
+        $session = (isset($_SESSION['rocketchat']['status'])) ? $_SESSION['rocketchat']['status'] : false;
+        if ($session) {
+            if ($status = $login->login_with_session()) {
                 $this->content->text = $renderer->render_block($block, $login);
-            } else {
-                $this->content->text = get_string('loginerror', 'block_rocketchat');;
             }
-        } else {
-            // Login without session.
-            $this->content->text = $renderer->render_login($block);
 
+            return $this->content;
         }
 
-        $this->content->footer = '';
+        // Login without session but valid or invalid token.
+        $token = get_user_preferences('local_rocketchat_external_token');
+        if (!$session && $token) {
+            if ($status = $login->login_with_token($token)) {
+                $this->content->text = $renderer->render_block($block, $login);
+            } else {
+                $this->content->text = $renderer->render_login($block);
+            }
+
+            return $this->content;
+        }
+
+        // Login without session and token.
+        if (!$session && !$token) {
+            $this->content->text = $renderer->render_login($block);
+        }
+
         return $this->content;
     }
 }
