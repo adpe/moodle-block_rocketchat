@@ -14,6 +14,17 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
+{{!
+    @template block_rocketchat/login
+
+    This template renders the login form for the Rocket.Chat block.
+
+    Example context (json):
+    {
+        "tmpusername": "username",
+        "tmppassword": "password"
+    }
+}}
 <div class="wrappingdiv">
 	<form id="rocketchat_form_login" method="post" action="">
 		<div><p>{{# str}} intro, block_rocketchat {{/ str}}</p></div>

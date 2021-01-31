@@ -32,8 +32,6 @@ define('ROCKET_CHAT_INSTANCE', (new local_rocketchat\client)->get_instance_url()
 class block_rocketchat extends block_base {
 
     public function init() {
-        global $CFG, $PAGE;
-
         $this->title = get_string('defaulttitle', 'block_rocketchat');
     }
 
