@@ -22,9 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// General.
 $string['pluginname'] = 'RocketChat';
 $string['defaulttitle'] = 'RocketChat';
 $string['blocksettings'] = 'Change block config';
+
+// Capabilities.
+$string['rocketchat:addinstance'] = 'Add a new Rocket.Chat block';
+$string['rocketchat:myaddinstance'] = 'Add a new Rocket.Chat block to Dashboard';
 
 // Main form.
 $string['lbl_group'] = 'Private channels';
