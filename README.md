@@ -1,4 +1,4 @@
-# Moodle Rocket.Chat Block Plugin [![Build Status](https://travis-ci.org/adpe/moodle-block_rocketchat.svg?branch=master)](https://travis-ci.org/adpe/moodle-block_rocketchat)
+# Moodle Rocket.Chat Block Plugin ![Moodle Plugin CI](https://github.com/adpe/moodle-block_rocketchat/workflows/Moodle%20Plugin%20CI/badge.svg)
 
 The Rocket.Chat block plugin acts as overview and quick access between Moodle and Rocket.Chat. This block lists all groups and channels of the Rocket.Chat user.
 
