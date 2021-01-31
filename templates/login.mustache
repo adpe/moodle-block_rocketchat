@@ -25,19 +25,22 @@
         "tmppassword": "password"
     }
 }}
-<div class="wrappingdiv">
-	<form id="rocketchat_form_login" method="post" action="">
-		<div><p>{{# str}} intro, block_rocketchat {{/ str}}</p></div>
-		<div class="field-group">
-	    	<div><label for="username">{{# str}} username, block_rocketchat {{/ str}}</label></div>
-			<div><input class="textfield" type="text" name="username" value="{{tmpusername}}"></div>
-		</div>
-		<div class="field-group">
-			<div><label for="password">{{# str}} password, block_rocketchat {{/ str}}</label></div>
-	    	<div><input class="textfield" type="password" name="password" value="{{tmppassword}}"></div>
-		</div>
-	    <div class="field-group">
-	    	<div><input class="loginbtn" type="submit" name="submit" value="{{# str}} submit, block_rocketchat {{/ str}}"></div>
-		</div>
-	</form>
+<div id="block-rocketchat-{{uniqid}}" data-region="rocketchat">
+    <div class="container-fluid p-0">
+        <form id="rocketchat_form_login" method="post">
+            <p>{{# str}} intro, block_rocketchat {{/ str}}</p>
+
+            <div class="form-group">
+                <label for="rocketchat_username">{{#str}} usernameemail {{/str}}</label>
+                <input type="text" class="form-control" id="rocketchat_username" value="{{tmpusername}}">
+            </div>
+
+            <div class="form-group">
+                <label for="rocketchat_password">{{#str}} password {{/str}}</label>
+                <input type="password" class="form-control" id="rocketchat_password" value="{{tmppassword}}">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">{{#str}} login {{/str}}</button>
+        </form>
+    </div>
 </div>

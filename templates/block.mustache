@@ -45,42 +45,37 @@
         ]
     }
 }}
-<div class="wrappingdiv">
-    <div class="status">
-        Status: <span class="online-text" data-region="contact-icon-{{#user}}{{status}}{{/user}}">
-                <i class="icon fa fa-circle fa-fw " aria-hidden="true" title="{{#user}}{{status}}{{/user}}" aria-label="{{#user}}{{status}}{{/user}}"></i>
-                </span>
-    </div>
-    <div class="groups">
-        <i class="fa fa-user-secret" aria-hidden="true"></i><span class="lbl_chat"> {{# str }} lbl_group, block_rocketchat {{/ str }}</span>
-        <div id="privateresults">
-        	<ul>
-        		{{#private}}
-        		<li>
-                    <a href="{{href}}{{name}}{{layout}}" target="_blank">{{name}}</a>
-                </li>
-        		{{/private}}
-        	</ul>
+<div id="block-rocketchat-{{uniqid}}" data-region="rocketchat">
+    <div class="container p-0">
+        <div class="btn-group pull-right">
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="rocketchat_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{#pix}} t/online, core, {{#user}}{{status}}{{/user}} {{/pix}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="rocketchat_dropdown">
+                    <a class="dropdown-item" href="./../blocks/rocketchat/classes/logout.php?id={{courseid}}">Logout</a>
+                </div>
+            </div>
         </div>
+
+        <h6>{{#pix}} i/switchrole, core {{/pix}} {{#str}} individualconversations, core_message {{/str}}</h6>
+        <ul class="list-group mb-3">
+        {{#private}}
+            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" target="_blank">{{name}}</a>
+        {{/private}}
+        {{^private}}
+            <small>{{#str}} noindividualconversations, core_message {{/str}}</small>
+        {{/private}}
+        </ul>
+
+        <h6>{{#pix}} i/group, core {{/pix}} {{#str}} groupconversations, core_message {{/str}}</h6>
+        <ul class="list-group">
+        {{#public}}
+            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" target="_blank">{{name}}</a>
+        {{/public}}
+        {{^public}}
+            <small>{{#str}} nogroupconversations, core_message {{/str}}</small>
+        {{/public}}
+        </ul>
     </div>
-    <div class="channels">
-        <i class="fa fa-users" aria-hidden="true"></i><span class="lbl_chat"> {{# str }} lbl_chat, block_rocketchat {{/ str }}</span>
-        <div id="publicresults">
-        	<ul>
-        		{{#public}}
-        		<li>
-                    <a href="{{href}}{{name}}{{layout}}" target="_blank">{{name}}</a>
-                </li>
-        		{{/public}}
-        	</ul>
-        </div>
-    </div>
-	<div class="dropdown">
-  		<button class="dropbtn">Actions</button>
-  		<div class="dropdown-content">
-    		<a href="#">Create channel</a>
-			<a href="#">Change status</a>
-			<a href="./../blocks/rocketchat/classes/logout.php?id={{courseid}}">Logout</a>
- 		</div>
-	</div>
 </div>
