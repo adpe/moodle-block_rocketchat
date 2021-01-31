@@ -29,14 +29,16 @@ use moodle_url;
 
 require_once($CFG->dirroot . '../../../config.php');
 
+require_login();
+
 $confirm = optional_param('confirm', 0, PARAM_INT);
-$sesskey = optional_param('sesskey', '__notpresent__', PARAM_RAW); // we want not null default to prevent required sesskey warning
+$sesskey = optional_param('sesskey', '__notpresent__', PARAM_RAW);
 
 $PAGE->set_url('/blocks/rocketchat/classes/logout.php');
 $PAGE->set_context(context_system::instance());
 
-$url_components = parse_url($_SERVER['HTTP_REFERER']);
-parse_str($url_components['query'], $tmpparams);
+$urlcomponents = parse_url($_SERVER['HTTP_REFERER']);
+parse_str($urlcomponents['query'], $tmpparams);
 
 $params['id'] = $tmpparams['id'];
 $redirect = new moodle_url('/course/view.php', $params);
@@ -53,7 +55,8 @@ if (!confirm_sesskey($sesskey)) {
     $PAGE->set_heading($SITE->fullname);
 
     echo $OUTPUT->header();
-    echo $OUTPUT->confirm(get_string('logoutconfirm'), new moodle_url($PAGE->url, array('sesskey'=>sesskey(), 'confirm' => 1)), $redirect);
+    echo $OUTPUT->confirm(get_string('logoutconfirm'), new moodle_url($PAGE->url, ['sesskey' => sesskey(), 'confirm' => 1]),
+            $redirect);
     echo $OUTPUT->footer();
 
     die;

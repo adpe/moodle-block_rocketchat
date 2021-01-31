@@ -21,7 +21,7 @@
 
     Example context (json):
     {
-        "logouturl": "https://FQDN/blocks/rocketchat/classes/logout.php?id=<courseid>",
+        "logouturl": "https://FQDN/blocks/rocketchat/classes/logout.php?id=courseid",
         "user": [
             {
                 "status": "offline"
@@ -59,23 +59,23 @@
         </div>
 
         <h6>{{#pix}} i/switchrole, core {{/pix}} {{#str}} individualconversations, core_message {{/str}}</h6>
-        <ul class="list-group mb-3">
+        <div class="list-group mb-3">
         {{#private}}
             <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" target="_blank">{{name}}</a>
         {{/private}}
         {{^private}}
             <small>{{#str}} noindividualconversations, core_message {{/str}}</small>
         {{/private}}
-        </ul>
+        </div>
 
         <h6>{{#pix}} i/group, core {{/pix}} {{#str}} groupconversations, core_message {{/str}}</h6>
-        <ul class="list-group">
+        <div class="list-group">
         {{#public}}
             <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" target="_blank">{{name}}</a>
         {{/public}}
         {{^public}}
             <small>{{#str}} nogroupconversations, core_message {{/str}}</small>
         {{/public}}
-        </ul>
+        </div>
     </div>
 </div>
