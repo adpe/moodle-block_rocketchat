@@ -21,7 +21,7 @@
 
     Example context (json):
     {
-        "courseid": "3",
+        "logouturl": "https://FQDN/blocks/rocketchat/classes/logout.php?id=<courseid>",
         "user": [
             {
                 "status": "offline"
@@ -53,7 +53,7 @@
                     {{#pix}} t/online, core, {{#user}}{{status}}{{/user}} {{/pix}}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="rocketchat_dropdown">
-                    <a class="dropdown-item" href="./../blocks/rocketchat/classes/logout.php?id={{courseid}}">Logout</a>
+                    <a class="dropdown-item" href="{{logouturl}}">Logout</a>
                 </div>
             </div>
         </div>

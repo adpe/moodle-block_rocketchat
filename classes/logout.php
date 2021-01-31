@@ -24,22 +24,37 @@
 
 namespace block_rocketchat;
 
-defined('MOODLE_INTERNAL') || die();
+use context_system;
+use moodle_url;
 
-$config = include_once(__DIR__ . '../cfg/config.php');
+require_once($CFG->dirroot . '../../../config.php');
 
-init_moodle_session();
+$confirm = optional_param('confirm', 0, PARAM_INT);
+$sesskey = optional_param('sesskey', '__notpresent__', PARAM_RAW); // we want not null default to prevent required sesskey warning
 
-function init_moodle_session() {
-    global $config;
+$PAGE->set_url('/blocks/rocketchat/classes/logout.php');
+$PAGE->set_context(context_system::instance());
 
-    session_name($config['cookiename']);
-    ini_set('session.save_handler', 'files');
-    session_save_path($config['dataroot'] . $config['sessions']);
-    session_start();
+$url_components = parse_url($_SERVER['HTTP_REFERER']);
+parse_str($url_components['query'], $tmpparams);
+
+$params['id'] = $tmpparams['id'];
+$redirect = new moodle_url('/course/view.php', $params);
+
+if ($confirm) {
+    unset($_SESSION['rocketchat']);
+    unset_user_preference('local_rocketchat_external_token');
+
+    redirect($redirect);
 }
 
-$_SESSION['rocketchat'] = array();
+if (!confirm_sesskey($sesskey)) {
+    $PAGE->set_title($SITE->fullname);
+    $PAGE->set_heading($SITE->fullname);
 
-$courseid = $_GET['id'];
-header("Location: ./../../../course/view.php?id=$courseid");
+    echo $OUTPUT->header();
+    echo $OUTPUT->confirm(get_string('logoutconfirm'), new moodle_url($PAGE->url, array('sesskey'=>sesskey(), 'confirm' => 1)), $redirect);
+    echo $OUTPUT->footer();
+
+    die;
+}

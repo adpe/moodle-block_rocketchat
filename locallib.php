@@ -37,31 +37,32 @@ function get_presence($data) {
 }
 
 function get_channels($tmpdata) {
-
     $api = new \RocketChat\Client();
-    $private = $api->list_groups();
-    $public = $api->list_channels();
 
-    foreach ($private as $i => $pri) {
-        $tmp = array(
-                'id' => $private[$i]->id,
-                'name' => $private[$i]->name,
-                'href' => ROCKET_CHAT_INSTANCE . '/group/',
-                'layout' => '?layout=embedded'
-        );
+    if (!empty($private = $api->list_groups())) {
+        foreach ($private as $i => $pri) {
+            $tmp = array(
+                    'id' => $private[$i]->id,
+                    'name' => $private[$i]->name,
+                    'href' => ROCKET_CHAT_INSTANCE . '/group/',
+                    'layout' => '?layout=embedded'
+            );
 
-        array_push($tmpdata['private'], $tmp);
+            array_push($tmpdata['private'], $tmp);
+        }
     }
 
-    foreach ($public as $i => $pub) {
-        $tmp = array(
-                'id' => $public[$i]->id,
-                'name' => $public[$i]->name,
-                'href' => ROCKET_CHAT_INSTANCE . '/channel/',
-                'layout' => '?layout=embedded'
-        );
+    if (!empty($public = $api->list_channels())) {
+        foreach ($public as $i => $pub) {
+            $tmp = array(
+                    'id' => $public[$i]->id,
+                    'name' => $public[$i]->name,
+                    'href' => ROCKET_CHAT_INSTANCE . '/channel/',
+                    'layout' => '?layout=embedded'
+            );
 
-        array_push($tmpdata['public'], $tmp);
+            array_push($tmpdata['public'], $tmp);
+        }
     }
 
     return $tmpdata;

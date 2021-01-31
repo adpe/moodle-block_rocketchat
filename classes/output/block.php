@@ -24,6 +24,8 @@
 
 namespace block_rocketchat\output;
 
+use moodle_url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . './../../locallib.php');
@@ -51,7 +53,7 @@ class block implements \renderable, \templatable {
         global $COURSE;
 
         $data = [
-            'courseid' => $COURSE->id,
+            'logouturl' => new moodle_url('/blocks/rocketchat/classes/logout.php', ['id' => $COURSE->id]),
             'user' => [],
             'private' => [],
             'public' => []
@@ -66,8 +68,8 @@ class block implements \renderable, \templatable {
     public function export_for_login(\renderer_base $output) {
 
         $data = [
-            'tmpusername' => isset($_POST["username"]) ? $_POST["username"] : '',
-            'tmppassword' => isset($_POST["password"]) ? $_POST["password"] : '',
+            'tmpusername' => isset($_POST['rocketchat_username']) ? $_POST['rocketchat_username'] : '',
+            'tmppassword' => isset($_POST['rocketchat_password']) ? $_POST['rocketchat_password'] : ''
         ];
 
         return $data;

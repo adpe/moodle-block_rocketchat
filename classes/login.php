@@ -55,24 +55,25 @@ class login {
         $this->usernameerror = get_string('usernameerror', 'block_rocketchat');
         $this->passworderror = get_string('passworderror', 'block_rocketchat');
 
+        $this->username = $_POST['rocketchat_username'];
+        $this->password = $_POST['rocketchat_password'];
+
         do {
-            if (empty($_POST["username"]) && empty($_POST["password"])) {
+            if (empty($this->username) && empty($this->password)) {
                 \core\notification::info($this->credentialserror);
                 break;
             }
 
-            if (empty($_POST["username"])) {
+            if (empty($this->username)) {
                 \core\notification::warning($this->usernameerror);
                 break;
             }
 
-            if (empty($_POST["password"])) {
+            if (empty($this->password)) {
                 \core\notification::warning($this->passworderror);
                 break;
             }
 
-            $this->username = $_POST['username'];
-            $this->password = $_POST['password'];
             $this->verify_login();
 
         } while (0);
