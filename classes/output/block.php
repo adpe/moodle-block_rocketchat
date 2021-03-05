@@ -52,7 +52,10 @@ class block implements \renderable, \templatable {
     public function export_for_block(\renderer_base $output) {
         global $COURSE;
 
+        $token = get_user_preferences('local_rocketchat_external_token');
+
         $data = [
+            'loginurl' => ROCKET_CHAT_INSTANCE . '/home?resumeToken=' . $token,
             'logouturl' => new moodle_url('/blocks/rocketchat/classes/logout.php', ['id' => $COURSE->id]),
             'user' => [],
             'private' => [],
