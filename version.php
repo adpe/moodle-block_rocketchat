@@ -24,11 +24,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component  = 'block_rocketchat';
-$plugin->version    = 2019031400;
-$plugin->requires   = 2016120500;
-$plugin->release    = '0.2.0';
-$plugin->maturity   = MATURITY_ALPHA;
+$plugin->component = 'block_rocketchat';
+$plugin->version = 2020120900;
+$plugin->requires = 2020061500;
+$plugin->release = 'v3.9-r1';
+$plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = [
-    'local_rocketchat' => 2016082402
+        'local_rocketchat' => 2020120900
 ];
