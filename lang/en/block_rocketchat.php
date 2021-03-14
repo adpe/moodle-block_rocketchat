@@ -31,6 +31,9 @@ $string['blocksettings'] = 'Change block config';
 $string['rocketchat:addinstance'] = 'Add a new Rocket.Chat block';
 $string['rocketchat:myaddinstance'] = 'Add a new Rocket.Chat block to Dashboard';
 
+// Privacy.
+$string['privacy:metadata'] = 'The Rocket.Chat block only shows information retrieved from Rocket.Chat and does not store any data of its own. It uses the stored data of the "local_rocketchat" plugin.';
+
 // Main form.
 $string['lbl_group'] = 'Private channels';
 $string['lbl_chat'] = 'Public channels';
