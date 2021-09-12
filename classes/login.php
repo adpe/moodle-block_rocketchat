@@ -50,13 +50,12 @@ class login {
     }
 
     private function login_with_form() {
+        $this->username = required_param('rocketchat_username', PARAM_USERNAME);
+        $this->password = required_param('rocketchat_password', PARAM_RAW);
 
         $this->credentialserror = get_string('credentialserror', 'block_rocketchat');
         $this->usernameerror = get_string('usernameerror', 'block_rocketchat');
         $this->passworderror = get_string('passworderror', 'block_rocketchat');
-
-        $this->username = $_POST['rocketchat_username'];
-        $this->password = $_POST['rocketchat_password'];
 
         do {
             if (empty($this->username) && empty($this->password)) {

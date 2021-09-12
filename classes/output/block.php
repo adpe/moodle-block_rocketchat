@@ -71,8 +71,8 @@ class block implements \renderable, \templatable {
     public function export_for_login(\renderer_base $output) {
 
         $data = [
-            'tmpusername' => isset($_POST['rocketchat_username']) ? $_POST['rocketchat_username'] : '',
-            'tmppassword' => isset($_POST['rocketchat_password']) ? $_POST['rocketchat_password'] : ''
+            'tmpusername' => optional_param('rocketchat_username', '', PARAM_USERNAME),
+            'tmppassword' => optional_param('rocketchat_password', '', PARAM_RAW)
         ];
 
         return $data;
