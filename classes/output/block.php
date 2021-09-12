@@ -62,8 +62,8 @@ class block implements \renderable, \templatable {
             'public' => []
         ];
 
-        $tmpdata = get_presence($data);
-        $finaldata = get_channels($tmpdata);
+        $tmpdata = block_rocketchat_get_presence($data);
+        $finaldata = block_rocketchat_get_channels($tmpdata);
 
         return $finaldata;
     }

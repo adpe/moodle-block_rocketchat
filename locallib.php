@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-function get_presence($data) {
+function block_rocketchat_get_presence($data) {
 
     $info = new \RocketChat\Client;
     $tmp = array(
@@ -36,7 +36,7 @@ function get_presence($data) {
     return $data;
 }
 
-function get_channels($tmpdata) {
+function block_rocketchat_get_channels($tmpdata) {
     $api = new \RocketChat\Client();
 
     if (!empty($private = $api->list_groups())) {
