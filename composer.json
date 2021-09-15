@@ -1,5 +1,5 @@
 {
     "require": {
-        "fab1en/rocket-chat-rest-client": "dev-master"
+        "fab1en/rocket-chat-rest-client": "^1.0"
     }
 }
