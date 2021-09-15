@@ -21,8 +21,7 @@
 
     Example context (json):
     {
-        "tmpusername": "username",
-        "tmppassword": "password"
+        "tmpusername": "username"
     }
 }}
 <div id="block-rocketchat-{{uniqid}}" data-region="rocketchat">
@@ -37,7 +36,7 @@
 
             <div class="form-group">
                 <label for="rocketchat_password">{{#str}} password {{/str}}</label>
-                <input type="password" class="form-control" id="rocketchat_password" name="rocketchat_password" value="{{tmppassword}}">
+                <input type="password" class="form-control" id="rocketchat_password" name="rocketchat_password" value="">
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">{{#str}} login {{/str}}</button>

@@ -24,6 +24,7 @@
 
 namespace block_rocketchat;
 
+use Httpful\Exception\ConnectionErrorException;
 use Httpful\Mime;
 use Httpful\Request;
 
@@ -31,62 +32,68 @@ defined('MOODLE_INTERNAL') || die();
 
 class login {
 
-    public $loginsession;
-    public $credentialserror;
-    public $usernameerror;
-    public $passworderror;
-    public $success;
-    public $error;
+    /**
+     * Store if a validation error exists.
+     *
+     * @var bool
+     */
+    public $error = false;
 
-    protected $username;
-    protected $password;
-
+    /**
+     * Login form constructor.
+     *
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
     public function __construct() {
-
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->login_with_form();
         }
-
-    }
-
-    private function login_with_form() {
-        $this->username = required_param('rocketchat_username', PARAM_USERNAME);
-        $this->password = required_param('rocketchat_password', PARAM_RAW);
-
-        $this->credentialserror = get_string('credentialserror', 'block_rocketchat');
-        $this->usernameerror = get_string('usernameerror', 'block_rocketchat');
-        $this->passworderror = get_string('passworderror', 'block_rocketchat');
-
-        do {
-            if (empty($this->username) && empty($this->password)) {
-                \core\notification::info($this->credentialserror);
-                break;
-            }
-
-            if (empty($this->username)) {
-                \core\notification::warning($this->usernameerror);
-                break;
-            }
-
-            if (empty($this->password)) {
-                \core\notification::warning($this->passworderror);
-                break;
-            }
-
-            $this->verify_login();
-
-        } while (0);
-
     }
 
     /**
+     * Login with the block login form.
      *
-     *
-     * @param $token
-     * @return bool
-     * @throws \Httpful\Exception\ConnectionErrorException
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
-    public function login_with_token($token) {
+    private function login_with_form() {
+        $username = required_param('rocketchat_username', PARAM_USERNAME);
+        $password = required_param('rocketchat_password', PARAM_RAW);
+
+        if (empty($username) || empty($password)) {
+            $this->error = true;
+        }
+
+        if (empty($username) && empty($password)) {
+            \core\notification::info(get_string('credentialserror', 'block_rocketchat'));
+
+            return;
+        }
+
+        if (empty($username)) {
+            \core\notification::warning(get_string('usernameerror', 'block_rocketchat'));
+
+            return;
+        }
+
+        if (empty($password)) {
+            \core\notification::warning(get_string('passworderror', 'block_rocketchat'));
+
+            return;
+        }
+
+        $this->verify_login($username, $password);
+    }
+
+    /**
+     * Login by stored user token.
+     *
+     * @param string $token the user preference auth token
+     * @return bool
+     * @throws ConnectionErrorException
+     */
+    public function login_with_token(string $token): bool {
         $response = Request::post(ROCKET_CHAT_INSTANCE . REST_API_ROOT . 'login')
             ->body(['resume' => $token], Mime::JSON)
             ->send();
@@ -106,40 +113,25 @@ class login {
         }
     }
 
-    public function login_with_session() {
+    /**
+     * Verify the login by credentials and store the user token.
+     *
+     * @param string $username the email or username
+     * @param string $password the user password
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    private function verify_login(string $username, string $password) {
+        $rocketchat = new \local_rocketchat\client();
+        $response = $rocketchat->authenticate($username, $password);
 
-        $this->username = $_SESSION['rocketchat']['username'];
-        $this->password = $_SESSION['rocketchat']['password'];
-        $this->loginsession = true;
-        $login = $this->verify_login();
+        if ($response->status === 'success') {
+            set_user_preference('local_rocketchat_external_user', $username);
+            set_user_preference('local_rocketchat_external_token', $response->data->authToken);
 
-        return $login;
-    }
-
-    private function verify_login() {
-        $this->success = get_string('validationsuccess', 'block_rocketchat');
-        $this->error = get_string('validationerror', 'block_rocketchat');
-
-        $auth = new \RocketChat\User
-        (
-                $this->username,
-                $this->password
-        );
-
-        if ($auth->login() == 1) {
-            $_SESSION['rocketchat']['username'] = $this->username;
-            $_SESSION['rocketchat']['password'] = $this->password;
-            $_SESSION['rocketchat']['status'] = true;
-
-            if (!$this->loginsession) {
-                \core\notification::success($this->success);
-            }
-
-            return true;
+            \core\notification::success(get_string('validationsuccess', 'block_rocketchat'));
         } else {
-            \core\notification::error($this->error);
-
-            return false;
+            \core\notification::error(get_string('validationerror', 'block_rocketchat'));
         }
     }
 }

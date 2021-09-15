@@ -69,12 +69,8 @@ class block implements \renderable, \templatable {
     }
 
     public function export_for_login(\renderer_base $output) {
-
-        $data = [
-            'tmpusername' => optional_param('rocketchat_username', '', PARAM_USERNAME),
-            'tmppassword' => optional_param('rocketchat_password', '', PARAM_RAW)
+        return [
+                'tmpusername' => optional_param('rocketchat_username', '', PARAM_USERNAME)
         ];
-
-        return $data;
     }
 }

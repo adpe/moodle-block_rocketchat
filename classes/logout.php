@@ -44,7 +44,6 @@ $params['id'] = $tmpparams['id'];
 $redirect = new moodle_url('/course/view.php', $params);
 
 if ($confirm) {
-    unset($_SESSION['rocketchat']);
     unset_user_preference('local_rocketchat_external_token');
 
     redirect($redirect);

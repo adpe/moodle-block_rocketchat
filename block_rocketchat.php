@@ -46,34 +46,17 @@ class block_rocketchat extends block_base {
         $renderer = $this->page->get_renderer('block_rocketchat');
         $block = new \block_rocketchat\output\block();
 
-        // Initialize objects and variables.
         $login = new \block_rocketchat\login();
-
-        // Login with existing session.
-        $session = (isset($_SESSION['rocketchat']['status'])) ? $_SESSION['rocketchat']['status'] : false;
-        if ($session) {
-            if ($status = $login->login_with_session()) {
-                $this->content->text = $renderer->render_block($block, $login);
-            }
-
-            return $this->content;
-        }
-
-        // Login without session but valid or invalid token.
         $token = get_user_preferences('local_rocketchat_external_token');
-        if (!$session && $token) {
-            if ($status = $login->login_with_token($token)) {
-                $this->content->text = $renderer->render_block($block, $login);
-            } else {
-                $this->content->text = $renderer->render_login($block);
-            }
+
+        if ($login->error || !$token) {
+            $this->content->text = $renderer->render_login($block);
 
             return $this->content;
         }
 
-        // Login without session and token.
-        if (!$session && !$token) {
-            $this->content->text = $renderer->render_login($block);
+        if ($login->login_with_token($token)) {
+            $this->content->text = $renderer->render_block($block);
         }
 
         return $this->content;
