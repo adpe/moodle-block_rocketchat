@@ -25,9 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_rocketchat';
-$plugin->version = 2021091201;
+$plugin->version = 2021091202;
 $plugin->requires = 2020061500;
-$plugin->release = 'v3.11-r1';
+$plugin->release = 'v3.11-r2';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->supported = [39, 311];
 $plugin->dependencies = [
