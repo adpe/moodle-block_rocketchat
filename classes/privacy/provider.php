@@ -26,8 +26,6 @@ namespace block_rocketchat\privacy;
 
 use core_privacy\local\metadata\null_provider;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Privacy Subsystem for block_rocketchat implementing null_provider.
  *
