@@ -28,8 +28,6 @@ use Httpful\Exception\ConnectionErrorException;
 use Httpful\Mime;
 use Httpful\Request;
 
-defined('MOODLE_INTERNAL') || die();
-
 class login {
 
     /**
