@@ -125,13 +125,16 @@ class login {
         $rocketchat = new \local_rocketchat\client();
         $response = $rocketchat->authenticate($username, $password);
 
-        if ($response->status === 'success') {
+        if (is_null($response)) {
+            \core\notification::error(get_string('validationerror', 'block_rocketchat'));
+            return;
+        }
+
+        if (isset($response->status) && $response->status === 'success') {
             set_user_preference('local_rocketchat_external_user', $username);
             set_user_preference('local_rocketchat_external_token', $response->data->authToken);
 
             \core\notification::success(get_string('validationsuccess', 'block_rocketchat'));
-        } else {
-            \core\notification::error(get_string('validationerror', 'block_rocketchat'));
         }
     }
 }
