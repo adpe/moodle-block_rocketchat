@@ -13,13 +13,12 @@ This plugin has a dependency as the [`local_rocketchat`](https://github.com/adpe
 
 1. Copy this Rocket.Chat plugin to the `blocks` directory of your Moodle instance: `git clone https://github.com/adpe/moodle-blocks_rocketchat.git blocks/rocketchat`
 2. Run `composer install` inside the `blocks/rocketchat` directory to install the dependencies
-3. Visit the notifications page to complete the install process
+3. Visit the notifications' page to complete the installation process
 
 For more information, visit [documentation](http://docs.moodle.org/en/Installing_contributed_modules_or_plugins) for installing contributed modules and plugins.
 
 *Note* - you need a running Rocket.Chat server that you can point the plugin to. If you aren't sure how to do this, checkout
-the [documentation](https://rocket.chat/docs/installation/) on Rocket.Chat. I also added a bit of [code](https://github.com/getsmarter/rocketchat-api-rest) to Rocket.Chat to make
-integration a little easier. This unfortunately will require a custom build of the Rocket.Chat source code.
+the [documentation](https://rocket.chat/docs/installation/) on Rocket.Chat.
 
 ## Configuration
 
@@ -29,12 +28,3 @@ under `Administration` > `General` > `Restrict access insid any Iframe/Options t
 ## Usage
 
 The user can add this block in all Moodle areas where blocks can be added. So he has over all Moodle access to his channels.
-
-## Todo
-
-- Create public channel direct from the block.
-- Create private group direct from the block.
-- Change the status of the user.
-- Open new chat inside popup and not as new tab.
-- Fix logout out of block.
-- Redesign block.
