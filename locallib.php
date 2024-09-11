@@ -22,44 +22,55 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Return user status data.
+ *
+ * @param $data
+ * @return array
+ */
 function block_rocketchat_get_presence($data) {
+    $info = new \RocketChat\Client();
+    $tmp = [
+            'status' => $info->me()->status,
+    ];
 
-    $info = new \RocketChat\Client;
-    $tmp = array(
-            'status' => $info->me()->status
-    );
-
-    array_push($data['user'], $tmp);
+    $data['user'][] = $tmp;
 
     return $data;
 }
 
+/**
+ * Return private and public channels data.
+ *
+ * @param $tmpdata
+ * @return array
+ */
 function block_rocketchat_get_channels($tmpdata) {
     $api = new \RocketChat\Client();
 
     if (!empty($private = $api->list_groups())) {
         foreach ($private as $i => $pri) {
-            $tmp = array(
+            $tmp = [
                     'id' => $private[$i]->id,
                     'name' => $private[$i]->name,
                     'href' => ROCKET_CHAT_INSTANCE . '/group/',
-                    'layout' => '?layout=embedded'
-            );
+                    'layout' => '?layout=embedded',
+            ];
 
-            array_push($tmpdata['private'], $tmp);
+            $tmpdata['private'][] = $tmp;
         }
     }
 
     if (!empty($public = $api->list_channels())) {
         foreach ($public as $i => $pub) {
-            $tmp = array(
+            $tmp = [
                     'id' => $public[$i]->id,
                     'name' => $public[$i]->name,
                     'href' => ROCKET_CHAT_INSTANCE . '/channel/',
-                    'layout' => '?layout=embedded'
-            );
+                    'layout' => '?layout=embedded',
+            ];
 
-            array_push($tmpdata['public'], $tmp);
+            $tmpdata['public'][] = $tmp;
         }
     }
 

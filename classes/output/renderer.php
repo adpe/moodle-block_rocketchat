@@ -24,10 +24,12 @@
 
 namespace block_rocketchat\output;
 
+/**
+ * Class renderer for rendering block pages.
+ */
 class renderer extends \plugin_renderer_base {
-
     /**
-     * Render a rocketchat block
+     * Render block channels page.
      *
      * @param \templatable $block
      * @return string|boolean

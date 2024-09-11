@@ -31,5 +31,5 @@ $plugin->release = 'v4.0-r1';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->supported = [400, 400];
 $plugin->dependencies = [
-        'local_rocketchat' => 2022043000
+        'local_rocketchat' => 2022043000,
 ];

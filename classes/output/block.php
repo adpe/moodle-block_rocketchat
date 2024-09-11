@@ -30,25 +30,34 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . './../../locallib.php');
 
+/**
+ * Class to help display the block.
+ */
 class block implements \renderable, \templatable {
-
     /**
-     * Contructor
+     * Constructor.
      */
     public function __construct() {
     }
 
     /**
-     * Prepare data for use in a template
+     * Prepare data for use in a template.
      *
      * @param \renderer_base $output
      * @return array Template data
      */
-
     public function export_for_template(\renderer_base $output) {
         return [];
     }
 
+    /**
+     * Prepare data to use when logged in.
+     *
+     * @param \renderer_base $output
+     * @return array Template data
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     */
     public function export_for_block(\renderer_base $output) {
         global $COURSE;
 
@@ -59,7 +68,7 @@ class block implements \renderable, \templatable {
             'logouturl' => new moodle_url('/blocks/rocketchat/classes/logout.php', ['id' => $COURSE->id]),
             'user' => [],
             'private' => [],
-            'public' => []
+            'public' => [],
         ];
 
         $tmpdata = block_rocketchat_get_presence($data);
@@ -68,9 +77,16 @@ class block implements \renderable, \templatable {
         return $finaldata;
     }
 
+    /**
+     * Prepare data to use when not logged in.
+     *
+     * @param \renderer_base $output
+     * @return array
+     * @throws \coding_exception
+     */
     public function export_for_login(\renderer_base $output) {
         return [
-                'tmpusername' => optional_param('rocketchat_username', '', PARAM_USERNAME)
+                'tmpusername' => optional_param('rocketchat_username', '', PARAM_USERNAME),
         ];
     }
 }

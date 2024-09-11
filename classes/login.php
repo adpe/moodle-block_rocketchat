@@ -28,8 +28,10 @@ use Httpful\Exception\ConnectionErrorException;
 use Httpful\Mime;
 use Httpful\Request;
 
+/**
+ * This class handles the login.
+ */
 class login {
-
     /**
      * Store if a validation error exists.
      *

@@ -27,20 +27,34 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/vendor/autoload.php');
 
 define('REST_API_ROOT', '/api/v1/');
-define('ROCKET_CHAT_INSTANCE', (new local_rocketchat\client)->get_instance_url());
+define('ROCKET_CHAT_INSTANCE', (new local_rocketchat\client())->get_instance_url());
 
+/**
+ * This block simply outputs a list of links to channels.
+ */
 class block_rocketchat extends block_base {
-
+    /**
+     * Initialises the block instance.
+     *
+     * @return void
+     * @throws coding_exception
+     */
     public function init() {
         $this->title = get_string('defaulttitle', 'block_rocketchat');
     }
 
+    /**
+     * Returns the contents.
+     *
+     * @return stdClass|stdObject|null contents of block
+     * @throws coding_exception
+     */
     public function get_content() {
         if ($this->content !== null) {
             return $this->content;
         }
 
-        $this->content = new stdClass;
+        $this->content = new stdClass();
         $this->content->footer = '';
 
         $renderer = $this->page->get_renderer('block_rocketchat');

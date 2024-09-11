@@ -54,8 +54,11 @@ if (!confirm_sesskey($sesskey)) {
     $PAGE->set_heading($SITE->fullname);
 
     echo $OUTPUT->header();
-    echo $OUTPUT->confirm(get_string('logoutconfirm'), new moodle_url($PAGE->url, ['sesskey' => sesskey(), 'confirm' => 1]),
-            $redirect);
+    echo $OUTPUT->confirm(
+        get_string('logoutconfirm'),
+        new moodle_url($PAGE->url, ['sesskey' => sesskey(), 'confirm' => 1]),
+        $redirect
+    );
     echo $OUTPUT->footer();
 
     die;
