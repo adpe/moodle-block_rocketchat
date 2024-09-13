@@ -22,32 +22,21 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// General.
-$string['pluginname'] = 'RocketChat';
-$string['defaulttitle'] = 'RocketChat';
 $string['blocksettings'] = 'Change block config';
-
-// Capabilities.
+$string['credentialserror'] = 'Please enter the credentials.';
+$string['defaulttitle'] = 'RocketChat';
+$string['intro'] = 'Please login with your Rocket.Chat credentials.';
+$string['lbl_chat'] = 'Public channels';
+$string['lbl_group'] = 'Private channels';
+$string['loginerror'] = 'Something went wrong with the login procedure.';
+$string['password'] = 'Password';
+$string['passworderror'] = 'Please enter the password.';
+$string['pluginname'] = 'RocketChat';
+$string['privacy:metadata'] = 'The Rocket.Chat block only shows information retrieved from Rocket.Chat and does not store any data of its own. It uses the stored data of the "local_rocketchat" plugin.';
 $string['rocketchat:addinstance'] = 'Add a new Rocket.Chat block';
 $string['rocketchat:myaddinstance'] = 'Add a new Rocket.Chat block to Dashboard';
-
-// Privacy.
-$string['privacy:metadata'] = 'The Rocket.Chat block only shows information retrieved from Rocket.Chat and does not store any data of its own. It uses the stored data of the "local_rocketchat" plugin.';
-
-// Main form.
-$string['lbl_group'] = 'Private channels';
-$string['lbl_chat'] = 'Public channels';
-
-// Login form.
-$string['intro'] = 'Please login with your Rocket.Chat credentials.';
-$string['loginerror'] = 'Something went wrong with the login procedure.';
-$string['username'] = 'Username';
-$string['password'] = 'Password';
 $string['submit'] = 'Submit';
-
-// Validation form messages.
-$string['credentialserror'] = 'Please enter the credentials.';
+$string['username'] = 'Username';
 $string['usernameerror'] = 'Please enter the username.';
-$string['passworderror'] = 'Please enter the password.';
-$string['validationsuccess'] = 'Successful logged in to RocketChat.';
 $string['validationerror'] = 'Please try again and enter the correct credentials.';
+$string['validationsuccess'] = 'Successful logged in to RocketChat.';
