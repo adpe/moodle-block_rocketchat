@@ -17,19 +17,18 @@
 /**
  *  Rocket.Chat block plugin version information.
  *
- * @package     block_rocketchat
- * @copyright   2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_rocketchat';
-$plugin->version = 2024091500;
-$plugin->requires = 2023100900;
-$plugin->release = 'v4.3-r1';
+$plugin->version = 2024091600;
+$plugin->requires = 2024042200;
+$plugin->release = 'v4.4-r1';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->supported = [403, 403];
 $plugin->dependencies = [
-        'local_rocketchat' => 2024091500,
+        'local_rocketchat' => 2024091600,
 ];
