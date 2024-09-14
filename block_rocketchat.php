@@ -17,10 +17,14 @@
 /**
  * The main block for the Rocket.Chat block plugin.
  *
- * @package     block_rocketchat
- * @copyright   2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use block_rocketchat\login;
+use block_rocketchat\output\block;
+use Httpful\Exception\ConnectionErrorException;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,17 +43,18 @@ class block_rocketchat extends block_base {
      * @return void
      * @throws coding_exception
      */
-    public function init() {
+    public function init(): void {
         $this->title = get_string('defaulttitle', 'block_rocketchat');
     }
 
     /**
      * Returns the contents.
      *
-     * @return stdClass|stdObject|null contents of block
+     * @return mixed contents of block
+     * @throws ConnectionErrorException
      * @throws coding_exception
      */
-    public function get_content() {
+    public function get_content(): mixed {
         if ($this->content !== null) {
             return $this->content;
         }
@@ -58,9 +63,9 @@ class block_rocketchat extends block_base {
         $this->content->footer = '';
 
         $renderer = $this->page->get_renderer('block_rocketchat');
-        $block = new \block_rocketchat\output\block();
+        $block = new block();
 
-        $login = new \block_rocketchat\login();
+        $login = new login();
         $token = get_user_preferences('local_rocketchat_external_token');
 
         if ($login->error || !$token) {

@@ -17,14 +17,19 @@
 /**
  * Rocket.Chat controller to get prepare data.
  *
- * @package     block_rocketchat
- * @copyright   2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_rocketchat\output;
 
+use coding_exception;
+use moodle_exception;
 use moodle_url;
+use renderable;
+use renderer_base;
+use templatable;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -33,7 +38,7 @@ require_once(__DIR__ . './../../locallib.php');
 /**
  * Class to help display the block.
  */
-class block implements \renderable, \templatable {
+class block implements renderable, templatable {
     /**
      * Constructor.
      */
@@ -43,32 +48,32 @@ class block implements \renderable, \templatable {
     /**
      * Prepare data for use in a template.
      *
-     * @param \renderer_base $output
+     * @param renderer_base $output
      * @return array Template data
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output): array {
         return [];
     }
 
     /**
      * Prepare data to use when logged in.
      *
-     * @param \renderer_base $output
+     * @param renderer_base $output
      * @return array Template data
-     * @throws \coding_exception
-     * @throws \moodle_exception
+     * @throws coding_exception
+     * @throws moodle_exception
      */
-    public function export_for_block(\renderer_base $output) {
+    public function export_for_block(renderer_base $output): array {
         global $COURSE;
 
         $token = get_user_preferences('local_rocketchat_external_token');
 
         $data = [
-            'loginurl' => ROCKET_CHAT_INSTANCE . '/home?resumeToken=' . $token,
-            'logouturl' => new moodle_url('/blocks/rocketchat/classes/logout.php', ['id' => $COURSE->id]),
-            'user' => [],
-            'private' => [],
-            'public' => [],
+                'loginurl' => ROCKET_CHAT_INSTANCE . '/home?resumeToken=' . $token,
+                'logouturl' => new moodle_url('/blocks/rocketchat/classes/logout.php', ['id' => $COURSE->id]),
+                'user' => [],
+                'private' => [],
+                'public' => [],
         ];
 
         $tmpdata = block_rocketchat_get_presence($data);
@@ -80,11 +85,11 @@ class block implements \renderable, \templatable {
     /**
      * Prepare data to use when not logged in.
      *
-     * @param \renderer_base $output
+     * @param renderer_base $output
      * @return array
-     * @throws \coding_exception
+     * @throws coding_exception
      */
-    public function export_for_login(\renderer_base $output) {
+    public function export_for_login(renderer_base $output): array {
         return [
                 'tmpusername' => optional_param('rocketchat_username', '', PARAM_USERNAME),
         ];

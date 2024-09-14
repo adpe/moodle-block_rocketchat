@@ -17,16 +17,19 @@
 /**
  * Rocket.Chat login handler.
  *
- * @package     block_rocketchat
- * @copyright   2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_rocketchat;
 
+use coding_exception;
+use core\notification;
 use Httpful\Exception\ConnectionErrorException;
 use Httpful\Mime;
 use Httpful\Request;
+use local_rocketchat\client;
 
 /**
  * This class handles the login.
@@ -37,13 +40,12 @@ class login {
      *
      * @var bool
      */
-    public $error = false;
+    public bool $error = false;
 
     /**
      * Login form constructor.
      *
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function __construct() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -54,10 +56,9 @@ class login {
     /**
      * Login with the block login form.
      *
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @throws coding_exception
      */
-    private function login_with_form() {
+    private function login_with_form(): void {
         $username = required_param('rocketchat_username', PARAM_USERNAME);
         $password = required_param('rocketchat_password', PARAM_RAW);
 
@@ -66,19 +67,19 @@ class login {
         }
 
         if (empty($username) && empty($password)) {
-            \core\notification::info(get_string('credentialserror', 'block_rocketchat'));
+            notification::info(get_string('credentialserror', 'block_rocketchat'));
 
             return;
         }
 
         if (empty($username)) {
-            \core\notification::warning(get_string('usernameerror', 'block_rocketchat'));
+            notification::warning(get_string('usernameerror', 'block_rocketchat'));
 
             return;
         }
 
         if (empty($password)) {
-            \core\notification::warning(get_string('passworderror', 'block_rocketchat'));
+            notification::warning(get_string('passworderror', 'block_rocketchat'));
 
             return;
         }
@@ -106,11 +107,9 @@ class login {
             Request::ini($tmp);
 
             return true;
-        } else {
-            echo ($response->body->message);
-
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -118,15 +117,14 @@ class login {
      *
      * @param string $username the email or username
      * @param string $password the user password
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @throws coding_exception
      */
-    private function verify_login(string $username, string $password) {
-        $rocketchat = new \local_rocketchat\client();
+    private function verify_login(string $username, string $password): void {
+        $rocketchat = new client();
         $response = $rocketchat->authenticate($username, $password);
 
-        if (is_null($response)) {
-            \core\notification::error(get_string('validationerror', 'block_rocketchat'));
+        if (is_null($response) || $response->status === 'error') {
+            notification::error(get_string('validationerror', 'block_rocketchat'));
             return;
         }
 
@@ -134,7 +132,7 @@ class login {
             set_user_preference('local_rocketchat_external_user', $username);
             set_user_preference('local_rocketchat_external_token', $response->data->authToken);
 
-            \core\notification::success(get_string('validationsuccess', 'block_rocketchat'));
+            notification::success(get_string('validationsuccess', 'block_rocketchat'));
         }
     }
 }

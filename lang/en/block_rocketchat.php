@@ -24,7 +24,7 @@
 
 $string['blocksettings'] = 'Change block config';
 $string['credentialserror'] = 'Please enter the credentials.';
-$string['defaulttitle'] = 'RocketChat';
+$string['defaulttitle'] = 'Rocket.Chat';
 $string['intro'] = 'Please login with your Rocket.Chat credentials.';
 $string['lbl_chat'] = 'Public channels';
 $string['lbl_group'] = 'Private channels';

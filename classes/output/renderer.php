@@ -17,25 +17,29 @@
 /**
  * Rocket.Chat renderer to pass data to template.
  *
- * @package     block_rocketchat
- * @copyright   2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_rocketchat\output;
 
+use moodle_exception;
+use plugin_renderer_base;
+use templatable;
+
 /**
  * Class renderer for rendering block pages.
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
     /**
      * Render block channels page.
      *
-     * @param \templatable $block
+     * @param  templatable $block
      * @return string|boolean
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
-    public function render_block(\templatable $block) {
+    public function render_block(templatable $block): bool|string {
         $data = $block->export_for_block($this);
 
         return $this->render_from_template('block_rocketchat/block', $data);
@@ -44,11 +48,11 @@ class renderer extends \plugin_renderer_base {
     /**
      * Render block login page.
      *
-     * @param \templatable $block
+     * @param  templatable $block
      * @return string|boolean
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
-    public function render_login(\templatable $block) {
+    public function render_login(templatable $block): bool|string {
         $data = $block->export_for_login($this);
 
         return $this->render_from_template('block_rocketchat/login', $data);

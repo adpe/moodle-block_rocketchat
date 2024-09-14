@@ -17,9 +17,9 @@
 /**
  * Privacy Subsystem implementation for block_rocketchat.
  *
- * @package    block_rocketchat
- * @copyright  2021 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2021 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_rocketchat\privacy;
@@ -29,9 +29,9 @@ use core_privacy\local\metadata\null_provider;
 /**
  * Privacy Subsystem for block_rocketchat implementing null_provider.
  *
- * @package    block_rocketchat
- * @copyright  2021 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2021 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements
     // This plugin does not store any personal user data.
@@ -40,7 +40,7 @@ class provider implements
      * Get the language string identifier with the component's language
      * file to explain why this plugin stores no data.
      *
-     * @return  string
+     * @return string
      */
     public static function get_reason(): string {
         return 'privacy:metadata';

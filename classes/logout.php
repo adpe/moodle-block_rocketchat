@@ -17,9 +17,9 @@
 /**
  * Rocket.Chat logout handler.
  *
- * @package     block_rocketchat
- * @copyright   2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_rocketchat;
@@ -27,7 +27,7 @@ namespace block_rocketchat;
 use context_system;
 use moodle_url;
 
-require_once($CFG->dirroot . '../../../config.php');
+require_once(__DIR__ . '/../../../config.php');
 
 require_login();
 

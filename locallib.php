@@ -17,19 +17,21 @@
 /**
  * The block for the RocketChat plugin.
  *
- * @package     block_rocketchat
- * @copyright   2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_rocketchat
+ * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use RocketChat\Client;
 
 /**
  * Return user status data.
  *
- * @param $data
+ * @param  array $data
  * @return array
  */
-function block_rocketchat_get_presence($data) {
-    $info = new \RocketChat\Client();
+function block_rocketchat_get_presence(array $data): array {
+    $info = new Client();
     $tmp = [
             'status' => $info->me()->status,
     ];
@@ -42,11 +44,11 @@ function block_rocketchat_get_presence($data) {
 /**
  * Return private and public channels data.
  *
- * @param $tmpdata
+ * @param  array $tmpdata
  * @return array
  */
-function block_rocketchat_get_channels($tmpdata) {
-    $api = new \RocketChat\Client();
+function block_rocketchat_get_channels(array $tmpdata): array {
+    $api = new Client();
 
     if (!empty($private = $api->list_groups())) {
         foreach ($private as $i => $pri) {
