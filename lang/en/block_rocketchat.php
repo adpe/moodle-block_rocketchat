@@ -22,7 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['away'] = 'Away';
 $string['blocksettings'] = 'Change block config';
+$string['busy'] = 'Busy';
 $string['credentialserror'] = 'Please enter the credentials.';
 $string['defaulttitle'] = 'Rocket.Chat';
 $string['intro'] = 'Please login with your Rocket.Chat credentials.';
@@ -40,5 +42,3 @@ $string['username'] = 'Username';
 $string['usernameerror'] = 'Please enter the username.';
 $string['validationerror'] = 'Please try again and enter the correct credentials.';
 $string['validationsuccess'] = 'Successful logged in to RocketChat.';
-$string['away'] = 'Away';
-$string['busy'] = 'Busy';
