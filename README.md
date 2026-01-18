@@ -11,8 +11,8 @@ The Rocket.Chat block plugin acts as overview and quick access between Moodle an
 
 This plugin has a dependency as the [`local_rocketchat`](https://github.com/adpe/moodle-local_rocketchat) plugin must be installed first. After that please do these steps:
 
-1. Copy this Rocket.Chat plugin to the `blocks` directory of your Moodle instance: `git clone https://github.com/adpe/moodle-block_rocketchat.git blocks/rocketchat`
-2. Run `composer install` inside the `blocks/rocketchat` directory to install the dependencies
+1. Copy this Rocket.Chat plugin to the `blocks` directory of your Moodle instance: `git clone https://github.com/adpe/moodle-block_rocketchat.git public/blocks/rocketchat`
+2. Run `composer install` inside the `public/blocks/rocketchat` directory to install the dependencies
 3. Visit the notifications' page to complete the installation process
 
 For more information, visit [documentation](http://docs.moodle.org/en/Installing_contributed_modules_or_plugins) for installing contributed modules and plugins.
