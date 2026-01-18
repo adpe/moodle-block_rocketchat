@@ -32,8 +32,13 @@ use RocketChat\Client;
  */
 function block_rocketchat_get_presence(array $data): array {
     $info = new Client();
+    $status = $info->me()->status;
+
     $tmp = [
-            'status' => $info->me()->status,
+            'status-online' => $status === 'online',
+            'status-away' => $status === 'away',
+            'status-busy' => $status === 'busy',
+            'status-offline' => $status === 'offline',
     ];
 
     $data['user'][] = $tmp;

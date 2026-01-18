@@ -40,3 +40,5 @@ $string['username'] = 'Username';
 $string['usernameerror'] = 'Please enter the username.';
 $string['validationerror'] = 'Please try again and enter the correct credentials.';
 $string['validationsuccess'] = 'Successful logged in to RocketChat.';
+$string['away'] = 'Away';
+$string['busy'] = 'Busy';
