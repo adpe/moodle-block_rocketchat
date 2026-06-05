@@ -15,20 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *  Rocket.Chat block plugin version information.
+ * Rocket.Chat block external function definitions.
  *
  * @package   block_rocketchat
- * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
+ * @copyright 2026 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_rocketchat';
-$plugin->version = 2026011803;
-$plugin->requires = 2025041400;
-$plugin->release = 'v5.1-r3';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = [
-        'local_rocketchat' => 2026011802,
+$functions = [
+        'block_rocketchat_login' => [
+                'classname' => 'block_rocketchat\external\login',
+                'description' => 'Logs in to Rocket.Chat and returns the refreshed block content.',
+                'type' => 'write',
+                'ajax' => true,
+        ],
+        'block_rocketchat_set_status' => [
+                'classname' => 'block_rocketchat\external\set_status',
+                'description' => 'Updates the current user\'s Rocket.Chat presence status.',
+                'type' => 'write',
+                'ajax' => true,
+        ],
 ];

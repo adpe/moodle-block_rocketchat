@@ -21,12 +21,29 @@
 
     Example context (json):
     {
-        "tmpusername": "username"
+        "courseid": 2,
+        "displaymode": "popup",
+        "sesskey": "sesskey",
+        "tmpusername": "username",
+        "notifications": [
+            {
+                "type": "danger",
+                "message": "Please try again and enter the correct credentials."
+            }
+        ]
     }
 }}
-<div id="block-rocketchat-{{uniqid}}" data-region="rocketchat">
+<div id="block-rocketchat-{{uniqid}}" data-region="rocketchat" data-courseid="{{courseid}}" data-displaymode="{{displaymode}}">
     <div class="container-fluid p-0">
+        {{#notifications}}
+            <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
+                {{message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{#str}} closebuttontitle {{/str}}"></button>
+            </div>
+        {{/notifications}}
         <form id="rocketchat_login" method="POST" action="#">
+            <input type="hidden" name="rocketchat_login" value="1">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
             <p>{{# str}} intro, block_rocketchat {{/ str}}</p>
 
             <div class="mb-3">

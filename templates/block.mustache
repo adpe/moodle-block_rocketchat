@@ -21,23 +21,34 @@
 
     Example context (json):
     {
-        "logouturl": "https://FQDN/blocks/rocketchat/classes/logout.php?id=courseid",
+        "courseid": 2,
+        "displaymode": "popup",
+        "instanceurl": "https://FQDN",
+        "loginurl": "https://FQDN/home?resumeToken=token",
+        "logouturl": "https://FQDN/blocks/rocketchat/logout.php?id=courseid",
+        "notifications": [
+            {
+                "type": "success",
+                "message": "Successfully logged in to Rocket.Chat."
+            }
+        ],
         "user": [
             {
-                "status": "offline"
+                "status-online": false,
+                "status-away": false,
+                "status-busy": false,
+                "status-offline": true
             }
         ],
         "private": [
             {
-                "id": "GENERAL",
                 "name": "general",
-                "href": "https:\/\/FQDN\/channel\/",
+                "href": "https:\/\/FQDN\/group\/",
                 "layout": "?layout=embedded"
             }
         ],
         "public": [
             {
-                "id": "GENERAL",
                 "name": "general",
                 "href": "https:\/\/FQDN\/channel\/",
                 "layout": "?layout=embedded"
@@ -45,31 +56,63 @@
         ]
     }
 }}
-<div id="block-rocketchat-{{uniqid}}" data-region="rocketchat">
+<div id="block-rocketchat-{{uniqid}}" data-region="rocketchat" data-courseid="{{courseid}}" data-displaymode="{{displaymode}}">
     <div class="container p-0">
+        {{#notifications}}
+            <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
+                {{message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{#str}} closebuttontitle {{/str}}"></button>
+            </div>
+        {{/notifications}}
         <div class="flex-fill d-flex justify-content-end">
             <div class="dropdown">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="rocketchat_dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     {{#user}}
-                        {{#status-online}}
-                            {{#pix}} i/item, core, {{#str}} online, message {{/str}} {{/pix}}
-                        {{/status-online}}
-
-                        {{#status-away}}
-                            {{#pix}} i/calendareventtime, core, {{#str}} away, block_rocketchat {{/str}} {{/pix}}
-                        {{/status-away}}
-
-                        {{#status-busy}}
-                            {{#pix}} i/excluded, core, {{#str}} busy, block_rocketchat {{/str}} {{/pix}}
-                        {{/status-busy}}
-
-                        {{#status-offline}}
-                            {{#pix}} i/uncheckedcircle, core, {{#str}} offline, message {{/str}} {{/pix}}
-                        {{/status-offline}}
+                        <span data-region="rocketchat-status-icon">
+                            <span data-status="online" class="{{^status-online}}d-none{{/status-online}}">
+                                {{#pix}} i/item, core, {{#str}} online, message {{/str}} {{/pix}}
+                            </span>
+                            <span data-status="away" class="{{^status-away}}d-none{{/status-away}}">
+                                {{#pix}} i/calendareventtime, core, {{#str}} away, block_rocketchat {{/str}} {{/pix}}
+                            </span>
+                            <span data-status="busy" class="{{^status-busy}}d-none{{/status-busy}}">
+                                {{#pix}} i/excluded, core, {{#str}} busy, block_rocketchat {{/str}} {{/pix}}
+                            </span>
+                            <span data-status="offline" class="{{^status-offline}}d-none{{/status-offline}}">
+                                {{#pix}} i/uncheckedcircle, core, {{#str}} offline, message {{/str}} {{/pix}}
+                            </span>
+                        </span>
                     {{/user}}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="rocketchat_dropdown">
-                    <li><a class="dropdown-item" href="{{logouturl}}">Logout</a></li>
+                    <li><h6 class="dropdown-header">{{#str}} status, core {{/str}}</h6></li>
+                    <li>
+                        <a class="dropdown-item" href="#" data-action="rocketchat-set-status" data-status="online">
+                            {{#pix}} i/item, core {{/pix}} {{#str}} online, message {{/str}}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" data-action="rocketchat-set-status" data-status="away">
+                            {{#pix}} i/calendareventtime, core {{/pix}} {{#str}} away, block_rocketchat {{/str}}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" data-action="rocketchat-set-status" data-status="busy">
+                            {{#pix}} i/excluded, core {{/pix}} {{#str}} busy, block_rocketchat {{/str}}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" data-action="rocketchat-set-status" data-status="offline">
+                            {{#pix}} i/uncheckedcircle, core {{/pix}} {{#str}} offline, message {{/str}}
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" href="{{instanceurl}}" target="_blank" rel="noopener noreferrer">
+                            {{#pix}} i/externallink, core {{/pix}} {{#str}} gotoinstance, block_rocketchat {{/str}}
+                        </a>
+                    </li>
+                    <li><a class="dropdown-item" href="{{logouturl}}">{{#str}} logout, core {{/str}}</a></li>
                 </ul>
             </div>
         </div>
@@ -77,7 +120,7 @@
         <h6 class="pt-3">{{#pix}} i/switchrole, core {{/pix}} {{#str}} individualconversations, core_message {{/str}}</h6>
         <div class="list-group mb-3">
         {{#private}}
-            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" target="_blank">{{name}}</a>
+            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" data-action="view-channel" data-name="{{name}}">{{name}}</a>
         {{/private}}
         {{^private}}
             <small>{{#str}} noindividualconversations, core_message {{/str}}</small>
@@ -87,12 +130,12 @@
         <h6>{{#pix}} i/group, core {{/pix}} {{#str}} groupconversations, core_message {{/str}}</h6>
         <div class="list-group">
         {{#public}}
-            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" target="_blank">{{name}}</a>
+            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" data-action="view-channel" data-name="{{name}}">{{name}}</a>
         {{/public}}
         {{^public}}
             <small>{{#str}} nogroupconversations, core_message {{/str}}</small>
         {{/public}}
         </div>
     </div>
+    <iframe id="rocketchat-login" class="d-none" src="{{loginurl}}#"></iframe>
 </div>
-<iframe id="rocketchat-login" class="d-none" src="{{#loginurl}}{{loginurl}}{{/loginurl}}#"></iframe>
