@@ -17,49 +17,38 @@
 /**
  * Rocket.Chat logout handler.
  *
+ * Clears the stored Rocket.Chat token so the block falls back to its login form.
+ *
  * @package   block_rocketchat
  * @copyright 2019 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_rocketchat;
-
-use context_system;
-use moodle_url;
-
-require_once(__DIR__ . '/../../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 require_login();
 
+$id = optional_param('id', 0, PARAM_INT);
 $confirm = optional_param('confirm', 0, PARAM_INT);
-$sesskey = optional_param('sesskey', '__notpresent__', PARAM_RAW);
 
-$PAGE->set_url('/blocks/rocketchat/classes/logout.php');
+$PAGE->set_url('/blocks/rocketchat/logout.php', ['id' => $id]);
 $PAGE->set_context(context_system::instance());
 
-$urlcomponents = parse_url($_SERVER['HTTP_REFERER']);
-parse_str($urlcomponents['query'], $tmpparams);
+$redirect = $id ? new moodle_url('/course/view.php', ['id' => $id]) : new moodle_url('/my');
 
-$params['id'] = $tmpparams['id'];
-$redirect = new moodle_url('/course/view.php', $params);
-
-if ($confirm) {
+if ($confirm && confirm_sesskey()) {
     unset_user_preference('local_rocketchat_external_token');
 
     redirect($redirect);
 }
 
-if (!confirm_sesskey($sesskey)) {
-    $PAGE->set_title($SITE->fullname);
-    $PAGE->set_heading($SITE->fullname);
+$PAGE->set_title($SITE->fullname);
+$PAGE->set_heading($SITE->fullname);
 
-    echo $OUTPUT->header();
-    echo $OUTPUT->confirm(
-        get_string('logoutconfirm'),
-        new moodle_url($PAGE->url, ['sesskey' => sesskey(), 'confirm' => 1]),
-        $redirect
-    );
-    echo $OUTPUT->footer();
-
-    die;
-}
+echo $OUTPUT->header();
+echo $OUTPUT->confirm(
+    get_string('logoutconfirm'),
+    new moodle_url($PAGE->url, ['confirm' => 1, 'sesskey' => sesskey()]),
+    $redirect
+);
+echo $OUTPUT->footer();

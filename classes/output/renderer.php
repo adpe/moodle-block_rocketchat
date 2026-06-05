@@ -24,6 +24,7 @@
 
 namespace block_rocketchat\output;
 
+use block_rocketchat\rocketchat_client;
 use moodle_exception;
 use plugin_renderer_base;
 use templatable;
@@ -35,12 +36,26 @@ class renderer extends plugin_renderer_base {
     /**
      * Render block channels page.
      *
+     * The display mode is only consumed client-side (as a data attribute); the dynamic-login web service
+     * renders without it and the JS carries it across the swap, hence the default.
+     *
      * @param  templatable $block
+     * @param  rocketchat_client $client an authenticated client
+     * @param  int $courseid the course the block is displayed in
+     * @param  array $notifications feedback messages to render inside the block
+     * @param  string $displaymode how channels open (popup, window or newtab)
      * @return string|boolean
      * @throws moodle_exception
      */
-    public function render_block(templatable $block): bool|string {
-        $data = $block->export_for_block($this);
+    public function render_block(
+        templatable $block,
+        rocketchat_client $client,
+        int $courseid,
+        array $notifications = [],
+        string $displaymode = 'popup'
+    ): bool|string {
+        $data = $block->export_for_block($this, $client, $courseid, $displaymode);
+        $data['notifications'] = $notifications;
 
         return $this->render_from_template('block_rocketchat/block', $data);
     }
@@ -49,11 +64,21 @@ class renderer extends plugin_renderer_base {
      * Render block login page.
      *
      * @param  templatable $block
+     * @param  int $courseid the course the block is displayed in
+     * @param  array $notifications feedback messages to render inside the block
+     * @param  string $displaymode how channels open (popup, window or newtab)
      * @return string|boolean
      * @throws moodle_exception
      */
-    public function render_login(templatable $block): bool|string {
-        $data = $block->export_for_login($this);
+    public function render_login(
+        templatable $block,
+        int $courseid,
+        array $notifications = [],
+        string $displaymode = 'popup'
+    ): bool|string {
+        $data = $block->export_for_login($this, $courseid);
+        $data['displaymode'] = $displaymode;
+        $data['notifications'] = $notifications;
 
         return $this->render_from_template('block_rocketchat/login', $data);
     }

@@ -25,10 +25,6 @@
 namespace block_rocketchat;
 
 use coding_exception;
-use core\notification;
-use Httpful\Exception\ConnectionErrorException;
-use Httpful\Mime;
-use Httpful\Request;
 use local_rocketchat\client;
 
 /**
@@ -43,73 +39,66 @@ class login {
     public bool $error = false;
 
     /**
+     * Feedback messages to render inside the block.
+     *
+     * Each entry has a Bootstrap alert `type` (success, danger, warning, info) and a `message`.
+     *
+     * @var array<int, array{type: string, message: string}>
+     */
+    public array $messages = [];
+
+    /**
      * Login form constructor.
+     *
+     * Only acts on a genuine submission of this block's login form, identified by the
+     * {@see rocketchat_login} marker, and protected against CSRF by the session key.
      *
      * @throws coding_exception
      */
     public function __construct() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->login_with_form();
+        if (optional_param('rocketchat_login', 0, PARAM_BOOL) && confirm_sesskey()) {
+            $username = optional_param('rocketchat_username', '', PARAM_USERNAME);
+            $password = optional_param('rocketchat_password', '', PARAM_RAW);
+
+            $this->attempt($username, $password);
         }
     }
 
     /**
-     * Login with the block login form.
+     * Validate the supplied credentials and, when valid, log in against Rocket.Chat.
      *
+     * Populates {@see self::$error} and {@see self::$messages} with the outcome. On success the
+     * Rocket.Chat token is stored as a user preference. Used by both the form POST fallback and
+     * the {@see external\login} web service.
+     *
+     * @param string $username the email or username
+     * @param string $password the user password
      * @throws coding_exception
      */
-    private function login_with_form(): void {
-        $username = required_param('rocketchat_username', PARAM_USERNAME);
-        $password = required_param('rocketchat_password', PARAM_RAW);
-
+    public function attempt(string $username, string $password): void {
         if (empty($username) || empty($password)) {
             $this->error = true;
         }
 
         if (empty($username) && empty($password)) {
-            notification::info(get_string('credentialserror', 'block_rocketchat'));
+            $this->add_message('info', 'credentialserror');
 
             return;
         }
 
         if (empty($username)) {
-            notification::warning(get_string('usernameerror', 'block_rocketchat'));
+            $this->add_message('warning', 'usernameerror');
 
             return;
         }
 
         if (empty($password)) {
-            notification::warning(get_string('passworderror', 'block_rocketchat'));
+            $this->add_message('warning', 'passworderror');
 
             return;
         }
 
         $this->verify_login($username, $password);
-    }
-
-    /**
-     * Login by stored user token.
-     *
-     * @param string $token the user preference auth token
-     * @return bool
-     * @throws ConnectionErrorException
-     */
-    public function login_with_token(string $token): bool {
-        $response = Request::post(ROCKET_CHAT_INSTANCE . REST_API_ROOT . 'login')
-            ->body(['resume' => $token], Mime::JSON)
-            ->send();
-
-        if ($response->code == 200 && isset($response->body->status) && $response->body->status == 'success') {
-            // Save auth token for future requests.
-            $tmp = Request::init()
-                ->addHeader('X-Auth-Token', $response->body->data->authToken)
-                ->addHeader('X-User-Id', $response->body->data->userId);
-            Request::ini($tmp);
-
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -124,7 +113,8 @@ class login {
         $response = $rocketchat->authenticate($username, $password);
 
         if (is_null($response) || $response->status === 'error') {
-            notification::error(get_string('validationerror', 'block_rocketchat'));
+            $this->add_message('danger', 'validationerror');
+
             return;
         }
 
@@ -132,7 +122,21 @@ class login {
             set_user_preference('local_rocketchat_external_user', $username);
             set_user_preference('local_rocketchat_external_token', $response->data->authToken);
 
-            notification::success(get_string('validationsuccess', 'block_rocketchat'));
+            $this->add_message('success', 'validationsuccess');
         }
+    }
+
+    /**
+     * Queue a feedback message for rendering inside the block.
+     *
+     * @param string $type a Bootstrap alert type (success, danger, warning, info)
+     * @param string $identifier the language string identifier in block_rocketchat
+     * @throws coding_exception
+     */
+    private function add_message(string $type, string $identifier): void {
+        $this->messages[] = [
+            'type' => $type,
+            'message' => get_string($identifier, 'block_rocketchat'),
+        ];
     }
 }

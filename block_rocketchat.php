@@ -24,14 +24,7 @@
 
 use block_rocketchat\login;
 use block_rocketchat\output\block;
-use Httpful\Exception\ConnectionErrorException;
-
-defined('MOODLE_INTERNAL') || die();
-
-require_once(__DIR__ . '/vendor/autoload.php');
-
-define('REST_API_ROOT', '/api/v1/');
-define('ROCKET_CHAT_INSTANCE', (new local_rocketchat\client())->get_instance_url());
+use block_rocketchat\rocketchat_client;
 
 /**
  * This block simply outputs a list of links to channels.
@@ -51,7 +44,6 @@ class block_rocketchat extends block_base {
      * Returns the contents.
      *
      * @return mixed contents of block
-     * @throws ConnectionErrorException
      * @throws coding_exception
      */
     public function get_content(): mixed {
@@ -64,19 +56,24 @@ class block_rocketchat extends block_base {
 
         $renderer = $this->page->get_renderer('block_rocketchat');
         $block = new block();
+        $courseid = (int) $this->page->course->id;
+        $displaymode = $this->config->displaymode ?? 'popup';
+
+        // Drives the dynamic login, presence controls and channel display; the form also works as a plain POST fallback.
+        $this->page->requires->js_call_amd('block_rocketchat/control', 'init');
 
         $login = new login();
         $token = get_user_preferences('local_rocketchat_external_token');
 
-        if ($login->error || !$token) {
-            $this->content->text = $renderer->render_login($block);
+        $client = new rocketchat_client();
+
+        if ($login->error || !$token || !$client->authenticate_with_token($token)) {
+            $this->content->text = $renderer->render_login($block, $courseid, $login->messages, $displaymode);
 
             return $this->content;
         }
 
-        if ($login->login_with_token($token)) {
-            $this->content->text = $renderer->render_block($block);
-        }
+        $this->content->text = $renderer->render_block($block, $client, $courseid, $login->messages, $displaymode);
 
         return $this->content;
     }

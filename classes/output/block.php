@@ -24,6 +24,7 @@
 
 namespace block_rocketchat\output;
 
+use block_rocketchat\rocketchat_client;
 use coding_exception;
 use moodle_exception;
 use moodle_url;
@@ -31,20 +32,10 @@ use renderable;
 use renderer_base;
 use templatable;
 
-defined('MOODLE_INTERNAL') || die();
-
-require_once(__DIR__ . './../../locallib.php');
-
 /**
  * Class to help display the block.
  */
 class block implements renderable, templatable {
-    /**
-     * Constructor.
-     */
-    public function __construct() {
-    }
-
     /**
      * Prepare data for use in a template.
      *
@@ -59,38 +50,60 @@ class block implements renderable, templatable {
      * Prepare data to use when logged in.
      *
      * @param renderer_base $output
+     * @param rocketchat_client $client an authenticated client
+     * @param int $courseid the course the block is displayed in, used for the logout return url
+     * @param string $displaymode how channels open (popup, window or newtab)
      * @return array Template data
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function export_for_block(renderer_base $output): array {
-        global $COURSE;
-
+    public function export_for_block(
+        renderer_base $output,
+        rocketchat_client $client,
+        int $courseid,
+        string $displaymode
+    ): array {
         $token = get_user_preferences('local_rocketchat_external_token');
+        $baseurl = $client->get_instance_url();
+        $status = $client->me()?->status;
 
-        $data = [
-                'loginurl' => ROCKET_CHAT_INSTANCE . '/home?resumeToken=' . $token,
-                'logouturl' => new moodle_url('/blocks/rocketchat/classes/logout.php', ['id' => $COURSE->id]),
-                'user' => [],
-                'private' => [],
-                'public' => [],
+        return [
+                'courseid' => $courseid,
+                'displaymode' => $displaymode,
+                'instanceurl' => $baseurl,
+                'loginurl' => $baseurl . '/home?resumeToken=' . $token,
+                'logouturl' => new moodle_url('/blocks/rocketchat/logout.php', ['id' => $courseid]),
+                'user' => [[
+                        'status-online' => $status === 'online',
+                        'status-away' => $status === 'away',
+                        'status-busy' => $status === 'busy',
+                        'status-offline' => $status === 'offline',
+                ]],
+                'private' => array_map(static fn($group): array => [
+                        'name' => $group->name,
+                        'href' => $baseurl . '/group/',
+                        'layout' => '?layout=embedded',
+                ], $client->list_groups()),
+                'public' => array_map(static fn($channel): array => [
+                        'name' => $channel->name,
+                        'href' => $baseurl . '/channel/',
+                        'layout' => '?layout=embedded',
+                ], $client->list_channels()),
         ];
-
-        $tmpdata = block_rocketchat_get_presence($data);
-        $finaldata = block_rocketchat_get_channels($tmpdata);
-
-        return $finaldata;
     }
 
     /**
      * Prepare data to use when not logged in.
      *
      * @param renderer_base $output
+     * @param int $courseid the course the block is displayed in, passed back when logging in
      * @return array
      * @throws coding_exception
      */
-    public function export_for_login(renderer_base $output): array {
+    public function export_for_login(renderer_base $output, int $courseid): array {
         return [
+                'courseid' => $courseid,
+                'sesskey' => sesskey(),
                 'tmpusername' => optional_param('rocketchat_username', '', PARAM_USERNAME),
         ];
     }
