@@ -55,7 +55,8 @@ class behat_block_rocketchat extends behat_base {
     /**
      * Assert that a user preference no longer exists.
      *
-     * @Then /^the user "(?P<username_string>(?:[^"]|\\")*)" should not have a "(?P<preference_string>(?:[^"]|\\")*)" user preference$/
+     * @Then /^the user "(?P<username_string>(?:[^"]|\\")*)" should not have a "(?P<preference_string>(?:[^"]|\\")*)" user
+     *         preference$/
      *
      * @param string $username the username the preference belongs to
      * @param string $preference the preference name
@@ -75,7 +76,8 @@ class behat_block_rocketchat extends behat_base {
     /**
      * Assert that a user preference exists with a given value.
      *
-     * @Then /^the user "(?P<username_string>(?:[^"]|\\")*)" should have a "(?P<preference_string>(?:[^"]|\\")*)" user preference with value "(?P<value_string>(?:[^"]|\\")*)"$/
+     * @Then /^the user "(?P<username_string>(?:[^"]|\\")*)" should have a "(?P<preference_string>(?:[^"]|\\")*)" user preference
+     *         with value "(?P<value_string>(?:[^"]|\\")*)"$/
      *
      * @param string $username the username the preference belongs to
      * @param string $preference the preference name
