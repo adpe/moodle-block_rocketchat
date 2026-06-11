@@ -38,6 +38,7 @@ $redirect = $id ? new moodle_url('/course/view.php', ['id' => $id]) : new moodle
 
 if ($confirm && confirm_sesskey()) {
     unset_user_preference('local_rocketchat_external_token');
+    unset_user_preference('local_rocketchat_external_user');
 
     redirect($redirect);
 }

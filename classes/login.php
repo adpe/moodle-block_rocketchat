@@ -112,18 +112,17 @@ class login {
         $rocketchat = new client();
         $response = $rocketchat->authenticate($username, $password);
 
-        if (is_null($response) || $response->status === 'error') {
+        if (!is_object($response) || ($response->status ?? '') !== 'success' || empty($response->data->authToken)) {
+            $this->error = true;
             $this->add_message('danger', 'validationerror');
 
             return;
         }
 
-        if (isset($response->status) && $response->status === 'success') {
-            set_user_preference('local_rocketchat_external_user', $username);
-            set_user_preference('local_rocketchat_external_token', $response->data->authToken);
+        set_user_preference('local_rocketchat_external_user', $username);
+        set_user_preference('local_rocketchat_external_token', $response->data->authToken);
 
-            $this->add_message('success', 'validationsuccess');
-        }
+        $this->add_message('success', 'validationsuccess');
     }
 
     /**
