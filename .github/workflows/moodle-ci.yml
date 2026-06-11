@@ -78,6 +78,9 @@ jobs:
 
       - name: Install moodle-plugin-ci
         run: |
+          # block_rocketchat depends on local_rocketchat (see version.php), so it
+          # must be present for installation and the PHPUnit/Behat suites to run.
+          moodle-plugin-ci add-plugin adpe/moodle-local_rocketchat
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
