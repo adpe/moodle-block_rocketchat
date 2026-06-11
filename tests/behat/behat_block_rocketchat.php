@@ -52,6 +52,7 @@ class behat_block_rocketchat extends behat_base {
         return $DB->get_field('user_preferences', 'value', ['userid' => $userid, 'name' => $preference]);
     }
 
+    // phpcs:disable moodle.Files.LineLength.TooLong -- Behat step regexes cannot be wrapped.
     /**
      * Assert that a user preference no longer exists.
      *
@@ -99,4 +100,5 @@ class behat_block_rocketchat extends behat_base {
             );
         }
     }
+    // phpcs:enable moodle.Files.LineLength.TooLong
 }
