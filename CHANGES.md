@@ -3,6 +3,26 @@
 All notable changes to the Rocket.Chat block plugin are documented in this file.
 Releases use Moodle-style names (e.g. `v5.1-r3`); see the Git tags for the full history.
 
+## v5.1-r4
+
+Requires Moodle 5.1 (`2025041400`) and `local_rocketchat` (`2026011802`).
+
+### Fixed
+
+- The stored Rocket.Chat username is now cleared on logout, and the login handler verifies its input
+  more strictly before storing credentials.
+
+### Added
+
+- Unit tests for the login handler and Behat coverage for the logout flow.
+- PHPUnit code coverage reporting in CI, uploaded to Codecov (coverage badge in the README); coverage
+  extended to the API client, the external functions and the exported definitions.
+
+### Changed
+
+- `@covers` annotations converted to PHPUnit `#[CoversClass]` attributes.
+- CI now installs the `local_rocketchat` dependency before running.
+
 ## v5.1-r3
 
 Requires Moodle 5.1 (`2025041400`) and `local_rocketchat` (`2026011802`).
