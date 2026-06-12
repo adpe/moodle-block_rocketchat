@@ -25,6 +25,8 @@
 
 namespace block_rocketchat;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+
 /**
  * Unit tests for the block_rocketchat login handler.
  *
@@ -36,6 +38,7 @@ namespace block_rocketchat;
  * @copyright  2026 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+#[CoversClass(login::class)]
 final class login_test extends \advanced_testcase {
     /**
      * Configure local_rocketchat so its client can be constructed.
@@ -63,8 +66,6 @@ final class login_test extends \advanced_testcase {
 
     /**
      * Missing credentials must flag an error without any network access.
-     *
-     * @covers \block_rocketchat\login::attempt
      */
     public function test_attempt_with_missing_credentials(): void {
         $this->resetAfterTest();
@@ -79,8 +80,6 @@ final class login_test extends \advanced_testcase {
 
     /**
      * Valid credentials must store the user and token preferences.
-     *
-     * @covers \block_rocketchat\login::attempt
      */
     public function test_attempt_stores_token_on_success(): void {
         $this->resetAfterTest();
@@ -106,8 +105,6 @@ final class login_test extends \advanced_testcase {
      * Regression test: verify_login() used to read $response->status without
      * checking it exists, raising an undefined property warning on error
      * payloads (e.g. proxy error pages), and did not set the error flag.
-     *
-     * @covers \block_rocketchat\login::attempt
      */
     public function test_attempt_handles_response_without_status(): void {
         $this->resetAfterTest();
@@ -129,8 +126,6 @@ final class login_test extends \advanced_testcase {
 
     /**
      * A successful status without an auth token must not store preferences.
-     *
-     * @covers \block_rocketchat\login::attempt
      */
     public function test_attempt_requires_auth_token(): void {
         $this->resetAfterTest();
