@@ -142,4 +142,58 @@ final class login_test extends \advanced_testcase {
         $this->assertTrue($login->error);
         $this->assertNull(get_user_preferences('local_rocketchat_external_token'));
     }
+
+    /**
+     * A missing username (with a password) is flagged with a targeted warning.
+     */
+    public function test_attempt_with_missing_username(): void {
+        $this->resetAfterTest();
+
+        $login = new login();
+        $login->attempt('', 'secret');
+
+        $this->assertTrue($login->error);
+        $this->assertCount(1, $login->messages);
+        $this->assertSame('warning', $login->messages[0]['type']);
+        $this->assertSame(get_string('usernameerror', 'block_rocketchat'), $login->messages[0]['message']);
+    }
+
+    /**
+     * A missing password (with a username) is flagged with a targeted warning.
+     */
+    public function test_attempt_with_missing_password(): void {
+        $this->resetAfterTest();
+
+        $login = new login();
+        $login->attempt('jane', '');
+
+        $this->assertTrue($login->error);
+        $this->assertCount(1, $login->messages);
+        $this->assertSame('warning', $login->messages[0]['type']);
+        $this->assertSame(get_string('passworderror', 'block_rocketchat'), $login->messages[0]['message']);
+    }
+
+    /**
+     * A genuine form submission (marker plus valid session key) triggers a login attempt.
+     */
+    public function test_constructor_processes_form_submission(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+        $this->setUser($this->getDataGenerator()->create_user());
+
+        $_POST['rocketchat_login'] = '1';
+        $_POST['sesskey'] = sesskey();
+        $_POST['rocketchat_username'] = 'jane';
+        $_POST['rocketchat_password'] = 'secret';
+
+        // LIFO: user verification first, admin client login (consumed first) last.
+        \curl::mock_response($this->login_success_response('usertoken'));
+        \curl::mock_response($this->login_success_response());
+
+        $login = new login();
+
+        $this->assertFalse($login->error);
+        $this->assertSame('usertoken', get_user_preferences('local_rocketchat_external_token'));
+        $this->assertSame('success', $login->messages[0]['type']);
+    }
 }

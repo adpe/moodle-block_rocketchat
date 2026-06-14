@@ -134,4 +134,30 @@ final class block_test extends \advanced_testcase {
         $this->assertSame(sesskey(), $data['sesskey']);
         $this->assertSame('', $data['tmpusername']);
     }
+
+    /**
+     * A previously submitted username is carried back into the login form.
+     */
+    public function test_export_for_login_reflects_submitted_username(): void {
+        $this->resetAfterTest();
+        $this->setUser($this->getDataGenerator()->create_user());
+
+        $_POST['rocketchat_username'] = 'jane';
+
+        $block = new block();
+        $data = $block->export_for_login($this->get_renderer(), 0);
+
+        $this->assertSame('jane', $data['tmpusername']);
+    }
+
+    /**
+     * The generic templatable export carries no data of its own.
+     */
+    public function test_export_for_template_is_empty(): void {
+        $this->resetAfterTest();
+
+        $block = new block();
+
+        $this->assertSame([], $block->export_for_template($this->get_renderer()));
+    }
 }
