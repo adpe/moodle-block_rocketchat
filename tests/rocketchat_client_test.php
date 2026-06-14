@@ -276,4 +276,52 @@ final class rocketchat_client_test extends \advanced_testcase {
 
         $this->assertFalse($client->set_status('away'));
     }
+
+    /**
+     * Once authenticated, the stored credentials are reused on subsequent requests.
+     *
+     * Exercises the authenticated request path (the auth headers are added once a
+     * token and user id are known) by chaining a token login and a me() call.
+     */
+    public function test_authenticated_requests_reuse_credentials(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+
+        // LIFO: me first, the token login (consumed first) last.
+        \curl::mock_response(json_encode(['success' => true, 'status' => 'online']));
+        \curl::mock_response($this->login_success_response());
+
+        $client = new rocketchat_client();
+
+        $this->assertTrue($client->authenticate_with_token('storedtoken'));
+        $this->assertSame('online', $client->me()->status);
+    }
+
+    /**
+     * A non-JSON me() response (e.g. a proxy error page) returns null cleanly.
+     */
+    public function test_me_invalid_json_returns_null(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+
+        \curl::mock_response('<html>502 Bad Gateway</html>');
+
+        $client = new rocketchat_client();
+
+        $this->assertNull($client->me());
+    }
+
+    /**
+     * A non-JSON groups listing returns an empty array.
+     */
+    public function test_list_groups_invalid_json_returns_empty(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+
+        \curl::mock_response('<html>502 Bad Gateway</html>');
+
+        $client = new rocketchat_client();
+
+        $this->assertSame([], $client->list_groups());
+    }
 }
