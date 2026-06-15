@@ -37,4 +37,10 @@ $functions = [
                 'type' => 'write',
                 'ajax' => true,
         ],
+        'block_rocketchat_get_block' => [
+                'classname' => 'block_rocketchat\external\get_block',
+                'description' => 'Returns the up-to-date block content for the client-side refresh.',
+                'type' => 'read',
+                'ajax' => true,
+        ],
 ];

@@ -44,14 +44,18 @@
             {
                 "name": "general",
                 "href": "https:\/\/FQDN\/group\/",
-                "layout": "?layout=embedded"
+                "layout": "?layout=embedded",
+                "unread": 3,
+                "hasunread": true
             }
         ],
         "public": [
             {
                 "name": "general",
                 "href": "https:\/\/FQDN\/channel\/",
-                "layout": "?layout=embedded"
+                "layout": "?layout=embedded",
+                "unread": 0,
+                "hasunread": false
             }
         ]
     }
@@ -120,7 +124,12 @@
         <h6 class="pt-3">{{#pix}} i/switchrole, core {{/pix}} {{#str}} individualconversations, core_message {{/str}}</h6>
         <div class="list-group mb-3">
         {{#private}}
-            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" data-action="view-channel" data-name="{{name}}">{{name}}</a>
+            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-action="view-channel" data-name="{{name}}">
+                <span>{{name}}</span>
+                {{#hasunread}}
+                    <span class="badge bg-primary rounded-pill" data-region="rocketchat-unread" aria-label="{{#str}} unreadmessages, block_rocketchat, {{unread}} {{/str}}">{{unread}}</span>
+                {{/hasunread}}
+            </a>
         {{/private}}
         {{^private}}
             <small>{{#str}} noindividualconversations, core_message {{/str}}</small>
@@ -130,7 +139,12 @@
         <h6>{{#pix}} i/group, core {{/pix}} {{#str}} groupconversations, core_message {{/str}}</h6>
         <div class="list-group">
         {{#public}}
-            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action" data-action="view-channel" data-name="{{name}}">{{name}}</a>
+            <a href="{{href}}{{name}}{{layout}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-action="view-channel" data-name="{{name}}">
+                <span>{{name}}</span>
+                {{#hasunread}}
+                    <span class="badge bg-primary rounded-pill" data-region="rocketchat-unread" aria-label="{{#str}} unreadmessages, block_rocketchat, {{unread}} {{/str}}">{{unread}}</span>
+                {{/hasunread}}
+            </a>
         {{/public}}
         {{^public}}
             <small>{{#str}} nogroupconversations, core_message {{/str}}</small>

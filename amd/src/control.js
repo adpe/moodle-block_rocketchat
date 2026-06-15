@@ -47,6 +47,8 @@ const MINIMIZED_WIDTH = 260;
 const MINIMIZED_GAP = 16;
 // Vertical gap left between an open popup and the docked (minimized) tab strip below it.
 const OPEN_BOTTOM_GAP = 16;
+// How often (ms) to poll Rocket.Chat for fresh unread counts and presence.
+const REFRESH_INTERVAL = 30000;
 
 let initialised = false;
 let topZindex = 1041;
@@ -69,6 +71,49 @@ const replaceRegion = (region, html) => {
         }
         region.replaceWith(replacement);
     }
+};
+
+/**
+ * Poll the web service for fresh content and swap it in, keeping unread counts and presence live.
+ *
+ * Skipped while the user is filling in the login form or has the status menu open, so the refresh
+ * never clobbers an interaction in progress. When Rocket.Chat is unreachable the current content is
+ * left untouched rather than replaced with a misleading login form.
+ *
+ * @param {HTMLElement} region The block region to refresh.
+ */
+const refreshRegion = (region) => {
+    if (region.querySelector(SELECTORS.form) || region.querySelector('.dropdown-menu.show')) {
+        return;
+    }
+
+    const courseid = Number(region.dataset.courseid) || 0;
+
+    Ajax.call([
+        {
+            methodname: 'block_rocketchat_get_block',
+            args: {courseid},
+        },
+    ])[0]
+        .then((response) => {
+            if (response.authenticated || !response.unreachable) {
+                replaceRegion(region, response.html);
+            }
+            return response;
+        })
+        .catch(Notification.exception);
+};
+
+/**
+ * Start the periodic refresh of every block region on the page.
+ */
+const startRefresh = () => {
+    setInterval(() => {
+        if (document.hidden) {
+            return;
+        }
+        document.querySelectorAll(SELECTORS.region).forEach(refreshRegion);
+    }, REFRESH_INTERVAL);
 };
 
 /**
@@ -363,6 +408,8 @@ export const init = () => {
         return;
     }
     initialised = true;
+
+    startRefresh();
 
     document.addEventListener('submit', (e) => {
         const form = e.target.closest(SELECTORS.form);

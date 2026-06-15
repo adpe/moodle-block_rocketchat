@@ -47,6 +47,8 @@ class block_rocketchat extends block_base {
      * @throws coding_exception
      */
     public function get_content(): mixed {
+        global $USER;
+
         if ($this->content !== null) {
             return $this->content;
         }
@@ -65,15 +67,38 @@ class block_rocketchat extends block_base {
         $login = new login();
         $token = get_user_preferences('local_rocketchat_external_token');
 
-        $client = new rocketchat_client();
-
-        if ($login->error || !$token || !$client->authenticate_with_token($token)) {
+        if ($login->error || !$token) {
             $this->content->text = $renderer->render_login($block, $courseid, $login->messages, $displaymode);
 
             return $this->content;
         }
 
-        $this->content->text = $renderer->render_block($block, $client, $courseid, $login->messages, $displaymode);
+        // Serve the room data from a short-lived per-user cache so the block can render on every
+        // page without calling Rocket.Chat; the client-side poll keeps it fresh (see control.js).
+        $cache = \core_cache\cache::make('block_rocketchat', 'blockdata');
+        $rooms = $cache->get($USER->id);
+
+        if ($rooms === false) {
+            $client = new rocketchat_client();
+
+            if (!$client->authenticate_with_token($token)) {
+                $messages = $login->messages;
+                if ($client->unreachable) {
+                    // Keep the user signed in conceptually: explain the outage instead of silently
+                    // dropping them back to a login form that looks like their session expired.
+                    $messages[] = ['type' => 'warning', 'message' => get_string('serviceunavailable', 'block_rocketchat')];
+                }
+                $this->content->text = $renderer->render_login($block, $courseid, $messages, $displaymode);
+
+                return $this->content;
+            }
+
+            $rooms = block::build_rooms($client);
+            $cache->set($USER->id, $rooms);
+        }
+
+        $data = $block->compose($rooms, $courseid, $displaymode);
+        $this->content->text = $renderer->render_block_data($data, $login->messages);
 
         return $this->content;
     }

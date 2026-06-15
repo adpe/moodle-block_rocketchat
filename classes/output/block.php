@@ -63,9 +63,58 @@ class block implements renderable, templatable {
         int $courseid,
         string $displaymode
     ): array {
-        $token = get_user_preferences('local_rocketchat_external_token');
+        return $this->compose(self::build_rooms($client), $courseid, $displaymode);
+    }
+
+    /**
+     * Fetch the user's Rocket.Chat room data from the API.
+     *
+     * This is the only part of the block view that touches the network, so it is also the part
+     * the block caches per user (see {@see \block_rocketchat\block_rocketchat::get_content()}).
+     * Unread counts from the user's subscriptions are merged into each room by name.
+     *
+     * @param rocketchat_client $client an authenticated client
+     * @return array{status: string|null, private: array, public: array} the cacheable room data
+     */
+    public static function build_rooms(rocketchat_client $client): array {
         $baseurl = $client->get_instance_url();
         $status = $client->me()?->status;
+        $groups = $client->list_groups();
+        $channels = $client->list_channels();
+        $unread = $client->get_subscriptions();
+
+        $room = static fn($room, string $href): array => [
+            'name' => $room->name,
+            'href' => $href,
+            'layout' => '?layout=embedded',
+            'unread' => $unread[$room->name] ?? 0,
+            'hasunread' => ($unread[$room->name] ?? 0) > 0,
+        ];
+
+        return [
+            'status' => $status,
+            'private' => array_map(static fn($group): array => $room($group, $baseurl . '/group/'), $groups),
+            'public' => array_map(static fn($channel): array => $room($channel, $baseurl . '/channel/'), $channels),
+        ];
+    }
+
+    /**
+     * Build the full template data for the logged in view from (cacheable) room data.
+     *
+     * The instance urls are derived from configuration and the stored token, so this needs no
+     * network access and can render a cached {@see self::build_rooms()} payload.
+     *
+     * @param array $rooms the room data from {@see self::build_rooms()}
+     * @param int $courseid the course the block is displayed in, used for the logout return url
+     * @param string $displaymode how channels open (popup, window or newtab)
+     * @return array Template data
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
+    public function compose(array $rooms, int $courseid, string $displaymode): array {
+        $token = get_user_preferences('local_rocketchat_external_token');
+        $baseurl = rocketchat_client::instance_url();
+        $status = $rooms['status'] ?? null;
 
         return [
                 'courseid' => $courseid,
@@ -79,16 +128,8 @@ class block implements renderable, templatable {
                         'status-busy' => $status === 'busy',
                         'status-offline' => $status === 'offline',
                 ]],
-                'private' => array_map(static fn($group): array => [
-                        'name' => $group->name,
-                        'href' => $baseurl . '/group/',
-                        'layout' => '?layout=embedded',
-                ], $client->list_groups()),
-                'public' => array_map(static fn($channel): array => [
-                        'name' => $channel->name,
-                        'href' => $baseurl . '/channel/',
-                        'layout' => '?layout=embedded',
-                ], $client->list_channels()),
+                'private' => $rooms['private'] ?? [],
+                'public' => $rooms['public'] ?? [],
         ];
     }
 

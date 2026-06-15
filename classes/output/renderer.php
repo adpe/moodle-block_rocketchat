@@ -55,6 +55,23 @@ class renderer extends plugin_renderer_base {
         string $displaymode = 'popup'
     ): bool|string {
         $data = $block->export_for_block($this, $client, $courseid, $displaymode);
+
+        return $this->render_block_data($data, $notifications);
+    }
+
+    /**
+     * Render the logged in view from already-prepared template data.
+     *
+     * Lets the block render a cached {@see \block_rocketchat\output\block::compose()} payload
+     * without an authenticated client, while {@see self::render_block()} keeps building the data
+     * live for the login and refresh web services.
+     *
+     * @param  array $data the composed block template data
+     * @param  array $notifications feedback messages to render inside the block
+     * @return string|boolean
+     * @throws moodle_exception
+     */
+    public function render_block_data(array $data, array $notifications = []): bool|string {
         $data['notifications'] = $notifications;
 
         return $this->render_from_template('block_rocketchat/block', $data);

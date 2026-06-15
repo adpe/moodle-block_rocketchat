@@ -324,4 +324,71 @@ final class rocketchat_client_test extends \advanced_testcase {
 
         $this->assertSame([], $client->list_groups());
     }
+
+    /**
+     * Subscriptions are returned as a name to unread-count map, skipping rooms with none.
+     */
+    public function test_get_subscriptions(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+
+        \curl::mock_response(json_encode([
+            'success' => true,
+            'update' => [
+                ['name' => 'general', 'unread' => 4],
+                ['name' => 'random', 'unread' => 0],
+                ['name' => 'staff', 'unread' => 1],
+            ],
+        ]));
+
+        $client = new rocketchat_client();
+        $unread = $client->get_subscriptions();
+
+        $this->assertSame(['general' => 4, 'staff' => 1], $unread);
+        $this->assertArrayNotHasKey('random', $unread);
+    }
+
+    /**
+     * A failed subscriptions call returns an empty map.
+     */
+    public function test_get_subscriptions_failure(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+
+        \curl::mock_response(json_encode(['success' => false]));
+
+        $client = new rocketchat_client();
+
+        $this->assertSame([], $client->get_subscriptions());
+    }
+
+    /**
+     * A valid Rocket.Chat response (even an error one) is not treated as unreachable.
+     */
+    public function test_unreachable_false_on_valid_response(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+
+        \curl::mock_response(json_encode(['status' => 'error', 'message' => 'Unauthorized']));
+
+        $client = new rocketchat_client();
+        $client->authenticate_with_token('expiredtoken');
+
+        $this->assertFalse($client->unreachable);
+    }
+
+    /**
+     * A non-JSON body (e.g. a proxy error page) flags the instance as unreachable.
+     */
+    public function test_unreachable_true_on_non_json(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+
+        \curl::mock_response('<html>502 Bad Gateway</html>');
+
+        $client = new rocketchat_client();
+        $client->authenticate_with_token('storedtoken');
+
+        $this->assertTrue($client->unreachable);
+    }
 }
