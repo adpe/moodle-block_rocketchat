@@ -47,6 +47,18 @@ class rocketchat_client {
     private const API_ROOT = '/api/v1/';
 
     /**
+     * Seconds to wait for the connection to Rocket.Chat to be established.
+     */
+    private const CONNECT_TIMEOUT = 5;
+
+    /**
+     * Seconds to wait for a Rocket.Chat request to complete.
+     *
+     * Bounded so a slow or unresponsive instance cannot hang the Moodle page render.
+     */
+    private const REQUEST_TIMEOUT = 10;
+
+    /**
      * The Rocket.Chat instance base url (no trailing slash), e.g. https://chat.example.com.
      *
      * @var string
@@ -73,6 +85,17 @@ class rocketchat_client {
      * @var string|null
      */
     private ?string $userid = null;
+
+    /**
+     * Whether the most recent request failed at the transport level (connection refused,
+     * timeout, or a non-JSON gateway error) rather than being rejected by Rocket.Chat.
+     *
+     * Lets callers tell "the service is unreachable" apart from "the credentials/token were
+     * rejected", so a logged in user is not silently dropped back to the login form.
+     *
+     * @var bool
+     */
+    public bool $unreachable = false;
 
     /**
      * Constructor.
@@ -120,6 +143,10 @@ class rocketchat_client {
      */
     private function request(string $method, string $endpoint, array $data = []): ?stdClass {
         $curl = new curl();
+        $curl->setopt([
+            'CURLOPT_CONNECTTIMEOUT' => self::CONNECT_TIMEOUT,
+            'CURLOPT_TIMEOUT' => self::REQUEST_TIMEOUT,
+        ]);
 
         $headers = ['Content-Type: application/json'];
         if ($this->authtoken !== null && $this->userid !== null) {
@@ -137,6 +164,10 @@ class rocketchat_client {
         }
 
         $decoded = json_decode($response);
+
+        // A transport error (errno) or a non-JSON body (e.g. a proxy error page) means the
+        // instance could not be reached; a valid JSON object means Rocket.Chat answered.
+        $this->unreachable = $curl->get_errno() !== 0 || !($decoded instanceof stdClass);
 
         return $decoded instanceof stdClass ? $decoded : null;
     }
@@ -194,6 +225,33 @@ class rocketchat_client {
         $response = $this->request('get', 'channels.list');
 
         return (isset($response->success) && $response->success) ? $response->channels : [];
+    }
+
+    /**
+     * The authenticated user's unread message counts, keyed by room name.
+     *
+     * Only rooms with at least one unread message are returned, so the caller can treat a
+     * present key as "has unread". Names collide across room types only in unusual setups;
+     * the block matches them back to the channel and group listings by name.
+     *
+     * @return array<string, int> a map of room name to unread message count
+     */
+    public function get_subscriptions(): array {
+        $response = $this->request('get', 'subscriptions.get');
+
+        if (!isset($response->success) || !$response->success || !isset($response->update)) {
+            return [];
+        }
+
+        $unread = [];
+        foreach ($response->update as $subscription) {
+            $count = (int) ($subscription->unread ?? 0);
+            if ($count > 0 && isset($subscription->name)) {
+                $unread[$subscription->name] = $count;
+            }
+        }
+
+        return $unread;
     }
 
     /**

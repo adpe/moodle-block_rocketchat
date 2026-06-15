@@ -3,6 +3,28 @@
 All notable changes to the Rocket.Chat block plugin are documented in this file.
 Releases use Moodle-style names (e.g. `v5.1-r3`); see the Git tags for the full history.
 
+## Unreleased
+
+### Added
+
+- **Unread message badges** next to each channel and group, sourced from the user's Rocket.Chat
+  subscriptions and refreshed live.
+- **Live refresh** of unread counts and presence every 30 seconds via a new
+  `block_rocketchat_get_block` web service (skipped while the login form or status menu is open, or
+  the browser tab is hidden).
+- A clear **"Rocket.Chat is currently unavailable"** notice when the instance cannot be reached, so a
+  signed-in user is no longer silently dropped back to the login form on an outage.
+
+### Changed
+
+- The block's room data (presence, channels and groups) is now served from a short-lived per-user
+  cache, so the block renders without calling Rocket.Chat on every page load.
+- The Rocket.Chat REST client now applies explicit connect and request timeouts so a slow or
+  unresponsive instance cannot hang the page render.
+
+> **Note:** this release adds a web service and a cache definition, so `version.php` must be bumped at
+> release time for them to be installed, and the AMD bundle (`amd/build/`) needs rebuilding with Grunt.
+
 ## v5.1-r4
 
 Requires Moodle 5.1 (`2025041400`) and `local_rocketchat` (`2026011802`).

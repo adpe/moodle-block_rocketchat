@@ -35,7 +35,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * that mocked responses form a stack (LIFO): the local_rocketchat client
  * constructor performs the first login request, the verification of the user
  * credentials the second one, the block client token login the third one and
- * the block rendering (me, groups.list, channels.list) the remaining ones.
+ * the block rendering (me, groups.list, channels.list, subscriptions.get) the
+ * remaining ones.
  *
  * @copyright  2026 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -86,6 +87,7 @@ final class login_test extends \core_external\tests\externallib_testcase {
         $this->setUser($this->getDataGenerator()->create_user());
 
         // LIFO: the responses are consumed bottom-up.
+        \curl::mock_response(json_encode(['success' => true, 'update' => []]));
         \curl::mock_response(json_encode(['success' => true, 'channels' => [['_id' => 'c1', 'name' => 'general']]]));
         \curl::mock_response(json_encode(['success' => true, 'groups' => [['_id' => 'g1', 'name' => 'staff']]]));
         \curl::mock_response(json_encode(['success' => true, 'status' => 'online']));

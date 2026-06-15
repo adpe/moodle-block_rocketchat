@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Rocket.Chat block external function definitions.
+ * Cache definitions for the Rocket.Chat block plugin.
  *
  * @package   block_rocketchat
  * @copyright 2026 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
@@ -24,23 +24,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$functions = [
-        'block_rocketchat_login' => [
-                'classname' => 'block_rocketchat\external\login',
-                'description' => 'Logs in to Rocket.Chat and returns the refreshed block content.',
-                'type' => 'write',
-                'ajax' => true,
-        ],
-        'block_rocketchat_set_status' => [
-                'classname' => 'block_rocketchat\external\set_status',
-                'description' => 'Updates the current user\'s Rocket.Chat presence status.',
-                'type' => 'write',
-                'ajax' => true,
-        ],
-        'block_rocketchat_get_block' => [
-                'classname' => 'block_rocketchat\external\get_block',
-                'description' => 'Returns the up-to-date block content for the client-side refresh.',
-                'type' => 'read',
-                'ajax' => true,
-        ],
+$definitions = [
+    // The per-user Rocket.Chat room data (presence, private groups and public channels with
+    // unread counts) shown by the block. Keyed by user id and short-lived so the block can be
+    // rendered on every page without hitting Rocket.Chat each time; the client-side poll keeps
+    // unread counts fresh and refreshes this entry.
+    'blockdata' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+        'ttl' => 60,
+    ],
 ];

@@ -33,7 +33,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  *
  * Rocket.Chat HTTP traffic is simulated through \curl::mock_response(). Note
  * that mocked responses form a stack (LIFO): export_for_block() requests me,
- * groups.list and channels.list in that order.
+ * groups.list, channels.list and subscriptions.get in that order.
  *
  * @copyright  2026 Adrian Perez <me@adrianperez.me> {@link https://adrianperez.me}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -70,7 +70,11 @@ final class block_test extends \advanced_testcase {
         $this->setUser($this->getDataGenerator()->create_user());
         set_user_preference('local_rocketchat_external_token', 'storedtoken');
 
-        // LIFO: channels.list first, groups.list second, me (consumed first) last.
+        // LIFO: subscriptions.get first, channels.list, groups.list, me (consumed first) last.
+        \curl::mock_response(json_encode([
+            'success' => true,
+            'update' => [['name' => 'staff', 'unread' => 2], ['name' => 'general', 'unread' => 5]],
+        ]));
         \curl::mock_response(json_encode(['success' => true, 'channels' => [['_id' => 'c1', 'name' => 'general']]]));
         \curl::mock_response(json_encode(['success' => true, 'groups' => [['_id' => 'g1', 'name' => 'staff']]]));
         \curl::mock_response(json_encode(['success' => true, 'status' => 'busy']));
@@ -91,8 +95,12 @@ final class block_test extends \advanced_testcase {
 
         $this->assertSame('staff', $data['private'][0]['name']);
         $this->assertSame('https://chat.example.com/group/', $data['private'][0]['href']);
+        $this->assertSame(2, $data['private'][0]['unread']);
+        $this->assertTrue($data['private'][0]['hasunread']);
         $this->assertSame('general', $data['public'][0]['name']);
         $this->assertSame('https://chat.example.com/channel/', $data['public'][0]['href']);
+        $this->assertSame(5, $data['public'][0]['unread']);
+        $this->assertTrue($data['public'][0]['hasunread']);
     }
 
     /**
@@ -104,7 +112,8 @@ final class block_test extends \advanced_testcase {
         $this->setUser($this->getDataGenerator()->create_user());
         set_user_preference('local_rocketchat_external_token', 'storedtoken');
 
-        // LIFO: empty channel and group listings first, me (failure, consumed first) last.
+        // LIFO: empty subscriptions first, then empty channel and group listings, me (failure) last.
+        \curl::mock_response(json_encode(['success' => true, 'update' => []]));
         \curl::mock_response(json_encode(['success' => true, 'channels' => []]));
         \curl::mock_response(json_encode(['success' => true, 'groups' => []]));
         \curl::mock_response(json_encode(['success' => false]));
@@ -117,6 +126,32 @@ final class block_test extends \advanced_testcase {
         $this->assertFalse($data['user'][0]['status-busy']);
         $this->assertFalse($data['user'][0]['status-offline']);
         $this->assertSame([], $data['private']);
+        $this->assertSame([], $data['public']);
+    }
+
+    /**
+     * compose() builds the logged in view from cached room data without any network access.
+     */
+    public function test_compose_from_cached_rooms(): void {
+        $this->resetAfterTest();
+        $this->setup_client_config();
+        $this->setUser($this->getDataGenerator()->create_user());
+        set_user_preference('local_rocketchat_external_token', 'storedtoken');
+
+        $rooms = [
+            'status' => 'away',
+            'private' => [['name' => 'staff', 'href' => 'https://chat.example.com/group/', 'unread' => 1, 'hasunread' => true]],
+            'public' => [],
+        ];
+
+        // No \curl::mock_response(): compose() must not touch the network.
+        $data = (new block())->compose($rooms, 7, 'newtab');
+
+        $this->assertSame(7, $data['courseid']);
+        $this->assertSame('newtab', $data['displaymode']);
+        $this->assertSame('https://chat.example.com/home?resumeToken=storedtoken', $data['loginurl']);
+        $this->assertTrue($data['user'][0]['status-away']);
+        $this->assertSame('staff', $data['private'][0]['name']);
         $this->assertSame([], $data['public']);
     }
 
